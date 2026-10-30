@@ -4,11 +4,14 @@
     "ignore": [
       "firebase.json",
       "**/.*",
+      ".git/**",
+      ".tools/**",
       "**/node_modules/**",
-      ".git",
-      ".tools",
-      "*.md",
-      "HANDOFF.md"
+      "**/*.md",
+      "**/*.exe",
+      "**/*.cmd",
+      "**/*.bat",
+      "**/*.ps1"
     ],
     "rewrites": [
       {
