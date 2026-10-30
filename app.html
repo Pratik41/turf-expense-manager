@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turf Expense Manager</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>⚽ Turf Expense Manager</h1>
+                <div class="header-actions">
+                    <span id="userName" class="user-name"></span>
+                    <button id="logoutBtn" class="btn btn-small">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
+            <button class="nav-tab" data-tab="statement">My Statement</button>
+            <button class="nav-tab admin-only" data-tab="members">Members</button>
+            <button class="nav-tab admin-only" data-tab="sessions">Sessions</button>
+            <button class="nav-tab" data-tab="reports">Reports</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <div class="dashboard-cards">
+                    <div class="card card-primary">
+                        <h3>Current Balance</h3>
+                        <p id="balanceAmount" class="amount">₹0</p>
+                        <p id="balanceWarning" class="warning hidden">⚠️ Low Balance</p>
+                    </div>
+                    <div class="card">
+                        <h3>Monthly Fee</h3>
+                        <p class="amount" id="monthlyFee">₹500</p>
+                    </div>
+                    <div class="card">
+                        <h3>Min. Balance</h3>
+                        <p class="amount">₹150</p>
+                    </div>
+                </div>
+
+                <div class="recent-transactions">
+                    <h2>Recent Transactions</h2>
+                    <div id="recentList" class="transaction-list"></div>
+                </div>
+            </section>
+
+            <!-- My Statement Tab -->
+            <section id="statement" class="tab-content">
+                <div class="month-selector">
+                    <select id="statementMonth">
+                        <option value="">Select Month...</option>
+                    </select>
+                </div>
+
+                <div id="statementContent" class="statement-content">
+                    <p>Select a month to view details</p>
+                </div>
+
+                <button id="exportBtn" class="btn btn-primary" style="display: none; margin-top: 20px;">
+                    📥 Export CSV
+                </button>
+            </section>
+
+            <!-- Members Tab (Admin Only) -->
+            <section id="members" class="tab-content">
+                <div class="section-header">
+                    <h2>Manage Members</h2>
+                    <button id="addMemberBtn" class="btn btn-primary">+ Add Member</button>
+                </div>
+
+                <div id="membersTable" class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sessions Tab (Admin Only) -->
+            <section id="sessions" class="tab-content">
+                <div class="section-header">
+                    <h2>Manage Sessions</h2>
+                    <button id="addSessionBtn" class="btn btn-primary">+ New Session</button>
+                </div>
+
+                <div id="sessionsList" class="sessions-list"></div>
+            </section>
+
+            <!-- Reports Tab -->
+            <section id="reports" class="tab-content">
+                <h2>Monthly Reports</h2>
+                <div class="month-selector">
+                    <select id="reportMonth">
+                        <option value="">Select Month...</option>
+                    </select>
+                </div>
+
+                <div id="reportContent" class="report-content">
+                    <p>Select a month to view report</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Member</h2>
+            <form id="addMemberForm">
+                <div class="form-group">
+                    <label for="memberName">Name</label>
+                    <input type="text" id="memberName" required>
+                </div>
+                <div class="form-group">
+                    <label for="memberEmail">Email</label>
+                    <input type="email" id="memberEmail" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+            </form>
+            <div id="memberError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Add Session Modal -->
+    <div id="addSessionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>New Session</h2>
+            <form id="addSessionForm">
+                <div class="form-group">
+                    <label for="sessionDate">Date</label>
+                    <input type="date" id="sessionDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="splitAmount">Split Amount (per person)</label>
+                    <input type="number" id="splitAmount" min="0" step="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="totalCost">Total Cost (optional)</label>
+                    <input type="number" id="totalCost" min="0" step="10">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Session</button>
+            </form>
+            <div id="sessionError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Session Details Modal -->
+    <div id="sessionDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="sessionDetailsTitle">Session Details</h2>
+            <div id="sessionDetailsContent"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/firebase-service.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
