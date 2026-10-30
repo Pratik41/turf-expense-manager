@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turf Expense Manager</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>⚽ Turf Expense Manager</h1>
+                <div class="header-actions">
+                    <button id="resetBtn" class="btn btn-small" style="background: #ef4444;">Reset All Data</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
+            <button class="nav-tab" data-tab="members">Members</button>
+            <button class="nav-tab" data-tab="sessions">Sessions</button>
+            <button class="nav-tab" data-tab="reports">Reports</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <div class="dashboard-cards">
+                    <div class="card card-primary">
+                        <h3>Total Members</h3>
+                        <p id="totalMembers" class="amount">0</p>
+                    </div>
+                    <div class="card">
+                        <h3>Monthly Fee</h3>
+                        <p class="amount">₹500</p>
+                    </div>
+                    <div class="card">
+                        <h3>Sessions Played</h3>
+                        <p id="totalSessions" class="amount">0</p>
+                    </div>
+                </div>
+
+                <div class="recent-transactions">
+                    <h2>Members & Balances</h2>
+                    <div id="membersOverview" class="transaction-list"></div>
+                </div>
+            </section>
+
+            <!-- Members Tab -->
+            <section id="members" class="tab-content">
+                <div class="section-header">
+                    <h2>Manage Members</h2>
+                    <button id="addMemberBtn" class="btn btn-primary">+ Add Member</button>
+                </div>
+
+                <div id="membersTable" class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="membersBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Sessions Tab -->
+            <section id="sessions" class="tab-content">
+                <div class="section-header">
+                    <h2>Sessions</h2>
+                    <button id="addSessionBtn" class="btn btn-primary">+ New Session</button>
+                </div>
+
+                <div id="sessionsList" class="sessions-list"></div>
+            </section>
+
+            <!-- Reports Tab -->
+            <section id="reports" class="tab-content">
+                <h2>Reports</h2>
+                <button id="exportBtn" class="btn btn-primary">📥 Export All Data (CSV)</button>
+                <div id="reportContent" class="report-content" style="margin-top: 20px;"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Member</h2>
+            <form id="addMemberForm">
+                <div class="form-group">
+                    <label for="memberName">Name</label>
+                    <input type="text" id="memberName" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Add Member</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="addSessionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>New Session</h2>
+            <form id="addSessionForm">
+                <div class="form-group">
+                    <label for="sessionDate">Date</label>
+                    <input type="date" id="sessionDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="splitAmount">Split Amount</label>
+                    <input type="number" id="splitAmount" min="0" step="10" required>
+                </div>
+                <div class="form-group">
+                    <label>Select Members (Attended)</label>
+                    <div id="memberCheckboxes" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Session</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app-offline.js"></script>
+</body>
+</html>
