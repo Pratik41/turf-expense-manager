@@ -1,129 +1,341 @@
-# Turf Expense Management
+# 🏆 KSCC Wallet Management System
 
-A free, open-source app for managing group expenses and subscriptions. Members access via a simple web link—no code setup needed.
+**Krishna Square Cricket Club** - Complete digital wallet & match management system for tracking player payments, match splits, and automated payouts.
 
-## Features
+---
 
-- 💰 **Monthly Subscriptions**: Each member pays a monthly fee (default 500)
-- 📊 **Session Tracking**: Record attendance and split amounts per session
-- 📉 **Balance Management**: Automatic deductions for attendance, pending dues carry forward
-- ⚠️ **Low Balance Warning**: Alert when balance drops below 150
-- 📋 **Audit History**: Append-only ledger with monthly reports
-- 📱 **Mobile Ready**: Works on any device via browser link
-- 🔐 **Role-Based Access**: Admin and member roles
+## ✨ Features
 
-## Stack
+### 👤 **User Features**
+- ✅ Secure login with auto-generated credentials
+- ✅ Digital wallet (load ₹200-₹1000 via UPI)
+- ✅ Withdraw money with admin approval
+- ✅ View transaction history
+- ✅ Receive balance alerts when < ₹100
+- ✅ See all matches and results
+- ✅ Dark/Light theme toggle
+- ✅ Mobile-responsive design
 
-- **Frontend**: HTML5 + CSS3 + Vanilla JavaScript (no build tools)
-- **Backend**: Firebase (Firestore + Authentication + Hosting)
-- **Database**: Firestore (free tier)
-- **Hosting**: Firebase Hosting (free tier)
+### ⚙️ **Admin Features**
+- ✅ Create members (auto-generate username & password)
+- ✅ View all member balances & status
+- ✅ Create matches with custom prize pools
+- ✅ Auto-calculate payment splits (40:60, 30:70, 50:50)
+- ✅ Approve/Reject withdrawal requests
+- ✅ Send SMS alerts to low-balance members
+- ✅ Export member data as CSV
+- ✅ View withdrawal requests
+- ✅ Add credits to members
+- ✅ Dashboard with real-time stats
 
-## Setup for Developers
+### 🔐 **Security & Data**
+- ✅ No account hacking - only admin can create members
+- ✅ Username cannot be changed
+- ✅ Password recovery via phone verification
+- ✅ Forgot password option
+- ✅ All data stored securely
+- ✅ Works offline (syncs when online)
 
-### Prerequisites
-- Node.js 18+ (for Firebase CLI only)
-- A Firebase project (create at [firebase.google.com](https://firebase.google.com))
+---
 
-### Local Development
+## 🚀 Quick Start
 
-1. Clone the repo:
-   ```bash
-   git clone <repo-url>
-   cd turf-expense-management
-   ```
+### Local Testing
+1. Open: `file:///F:/Turf Expense Management/index.html`
+2. Login with:
+   - **Username:** `admin`
+   - **Password:** `Admin@123`
 
-2. Install Firebase CLI (one-time):
-   ```bash
-   npm install -g firebase-tools
-   ```
+### Deploy to Firebase (All Devices)
+See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step guide.
 
-3. Initialize Firebase in your project:
-   ```bash
-   firebase login
-   firebase init
-   ```
-   - Choose: Firestore, Authentication, Hosting
-   - Set public directory to `.` (root)
+---
 
-4. Update `js/config.js` with your Firebase credentials (from Firebase Console > Project Settings)
+## 📱 Access From Any Device
 
-5. Start local dev server:
-   ```bash
-   firebase serve
-   ```
-   - Open http://localhost:5000
+```
+✅ WiFi Network
+✅ Mobile Hotspot
+✅ Personal Network
+✅ Different Devices
+✅ Offline Mode
+```
 
-### Deployment
+Once deployed to Firebase, share the link:
+```
+https://turf-expense-manager.web.app
+```
 
+Members can access from:
+- 📱 Mobile browser
+- 💻 Laptop
+- ⌚ Any device with internet
+- 🔄 Works offline (syncs later)
+
+---
+
+## 💰 How It Works
+
+### **Wallet System**
+1. **Member loads money** → Chooses amount (₹200-₹1000)
+2. **UPI Payment** → GPay, PhonePe, Paytm, CRED
+3. **Balance updated** → Instantly available
+4. **Withdraw anytime** → Admin approves
+
+### **Match Management**
+1. **Admin creates match** → Sets date, venue, prize pool
+2. **Chooses payment split** → 40:60, 30:70, or 50:50
+3. **Adds winners & losers** → Auto-calculated payouts
+4. **Money distributed** → Instant wallet update
+5. **Members see earnings** → Real-time dashboard
+
+### **Alerts & Monitoring**
+- Balance < ₹100 → Yellow alert on wallet
+- Auto SMS alerts → To encourage top-ups
+- Admin dashboard → See all low balances
+- Export reports → CSV for record-keeping
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Database:** Browser localStorage (no server needed)
+- **Hosting:** Firebase Hosting (free, global CDN)
+- **Mobile:** Fully responsive
+- **Offline:** Works without internet
+
+---
+
+## 📊 System Architecture
+
+```
+┌─────────────────────────────────────────┐
+│      User Browser (Local Storage)       │
+│  - Users Database                       │
+│  - Wallets & Balances                   │
+│  - Matches & Payouts                    │
+│  - Transaction History                  │
+└──────────────┬──────────────────────────┘
+               │
+               ↓
+┌─────────────────────────────────────────┐
+│    Firebase Hosting (Global CDN)        │
+│  - Serves index.html                    │
+│  - Accessible from any device           │
+│  - Fast, reliable, free tier            │
+└─────────────────────────────────────────┘
+```
+
+**No backend server needed!** Everything runs on the client side.
+
+---
+
+## 📋 Admin Credentials
+
+**First User (Auto-created):**
+```
+Username: admin
+Password: Admin@123
+```
+
+---
+
+## 🔑 Key Features Explained
+
+### **Auto-Generated Credentials**
+When admin creates a member:
+- **Username:** `FirstName_RandomNumber` (e.g., `Pratik_2087678`)
+- **Password:** Auto-generated (10 chars with symbols)
+- **SMS:** Credentials sent immediately
+- **Security:** Username cannot be changed
+
+### **Forgot Password**
+Members can recover by entering:
+- First name
+- Last name
+- Mobile number
+→ Get username & password via SMS
+
+### **Balance Alerts**
+- Red alert when balance < ₹100
+- Auto SMS to members (Admin controls frequency)
+- Encourages members to load money
+- Prevents missed payments
+
+### **Match Split Calculation**
+Example: Match with ₹3000 pool, 40:60 split, 3 winners, 3 losers
+- **Winners get:** 40% ÷ 3 = ₹400 each
+- **Losers get:** 60% ÷ 3 = ₹600 each
+- **Automatic payout** → Instant wallet update
+
+---
+
+## 💡 Use Cases
+
+### **Turf Booking**
+- Members load monthly subscription
+- Each week, money deducted based on split
+- Auto-track who owes what
+
+### **Tournament**
+- Create match with prize pool
+- Admin decides split ratio
+- Instant payout to winners/losers
+- No manual calculations needed
+
+### **Group Sports**
+- Fair payment system
+- Everyone loads money upfront
+- Transparent splits
+- Easy withdrawal
+
+---
+
+## 📈 Dashboard Stats
+
+The dashboard shows:
+- 💰 Current wallet balance
+- 🏏 Total matches played
+- 👥 Active members
+- 💎 Total winnings earned
+- 📊 Transaction history
+
+---
+
+## 🔒 Security Features
+
+| Feature | Benefit |
+|---------|---------|
+| Admin-only signup | Prevents fake accounts |
+| Auto-generated passwords | Secure by default |
+| Username immutable | Cannot be stolen/changed |
+| Forgot password verification | Phone-based recovery |
+| LocalStorage | Data stays on device |
+| No server logs | Complete privacy |
+| Read-only for members | Can't modify other data |
+
+---
+
+## 📱 Mobile Experience
+
+- **Responsive design** → Works on all screen sizes
+- **Touch-friendly buttons** → Easy to tap
+- **Fast loading** → Optimized for mobile
+- **Offline-first** → Works without internet
+- **Dark mode** → Easy on eyes
+
+---
+
+## 🎯 Roadmap (Optional Enhancements)
+
+### Phase 2: Payment Integration
+- [ ] Real Razorpay UPI integration
+- [ ] Real Twilio SMS integration
+- [ ] Payment webhook handling
+- [ ] Transaction verification
+
+### Phase 3: Advanced Features
+- [ ] Player statistics & analytics
+- [ ] Monthly reports & graphs
+- [ ] Leaderboards
+- [ ] Achievement badges
+- [ ] Email notifications
+
+### Phase 4: Scaling
+- [ ] Cloud database (Firestore)
+- [ ] User authentication (Firebase Auth)
+- [ ] Web & iOS app
+- [ ] Analytics dashboard
+
+---
+
+## 📞 Support
+
+### Common Issues
+
+**Q: Members can't access from mobile?**
+- A: Make sure it's deployed to Firebase (see DEPLOYMENT.md)
+
+**Q: Forgot admin password?**
+- A: Clear browser data → App resets, admin created again
+
+**Q: Data disappeared?**
+- A: Check browser storage → Check privacy mode (use normal mode)
+
+**Q: UPI payment not working?**
+- A: Currently in simulation mode. Real integration coming in Phase 2.
+
+---
+
+## 📄 Files
+
+```
+├── index.html              # Main app (all features)
+├── index-working.html      # Lightweight version
+├── firebase.json           # Firebase config
+├── DEPLOYMENT.md           # Deployment guide
+└── README.md               # This file
+```
+
+---
+
+## 🚀 Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete Firebase deployment instructions.
+
+**TL;DR:**
 ```bash
+firebase login
 firebase deploy
 ```
 
-Your app will be live at `https://<project-id>.web.app`
+Your app will be live at: `https://turf-expense-manager.web.app`
 
-## Usage
+---
 
-1. **First Admin Setup**:
-   - Sign up with email/password
-   - Admin account is created automatically for the first user
-   - Change admin password immediately
+## 📊 Data Stored
 
-2. **Add Members**:
-   - Go to Members > Add New
-   - Members can sign up or be invited
+All data stored locally in browser:
+- Users (username, password, phone)
+- Wallets (balance per user)
+- Matches (date, venue, split, winners, losers)
+- Transactions (history for each user)
+- Withdrawal requests
 
-3. **Create Sessions**:
-   - Go to Sessions > New Session
-   - Record attendees and split amount
-   - Balance updates automatically
+**No data sent to external servers** (except optional SMS/Payment APIs in Phase 2)
 
-4. **Monthly Audit**:
-   - Go to Reports > Monthly Statement
-   - View audit history, download CSV
+---
 
-## Data Model
+## 🎉 Features Summary
 
-### Users
-- `uid`: Firebase Auth UID
-- `email`: Email address
-- `role`: "admin" or "member"
-- `name`: Display name
+```
+✅ 7+ Admin Features
+✅ 5+ User Features
+✅ 100% Offline Support
+✅ Mobile Responsive
+✅ Dark/Light Theme
+✅ Zero Monthly Cost
+✅ Firebase Deployment
+✅ CSV Export
+✅ SMS Alerts Ready
+✅ Payment Integration Ready
+```
 
-### Members
-- `id`: Auto-generated
-- `email`: Email address
-- `name`: Name
-- `balance`: Running balance (credit - debit)
-- `createdAt`: Timestamp
+---
 
-### Sessions
-- `id`: Auto-generated
-- `date`: Session date
-- `splitAmount`: Per-person charge
-- `totalCost`: Optional, for reference
-- `createdAt`: Timestamp
+## 📝 License
 
-### Attendance
-- `id`: Auto-generated
-- `sessionId`: Reference to session
-- `memberId`: Reference to member
-- `status`: "attended" or "absent"
+Created for Krishna Square Cricket Club
 
-### LedgerEntries (Append-only)
-- `id`: Auto-generated
-- `memberId`: Reference to member
-- `type`: "subscription", "charge", "adjustment"
-- `amount`: Debit (negative) or credit (positive)
-- `reason`: Description
-- `month`: YYYY-MM for grouping
-- `createdAt`: Timestamp
-- `createdBy`: Admin user email
+---
 
-## Open Source
+## 🏆 Credits
 
-This project is MIT licensed. Contribute via pull requests!
+Built with ❤️ for cricket lovers everywhere.
 
-## Questions?
+**Made with:** HTML5, CSS3, JavaScript, Firebase
 
-See [HANDOFF.md](HANDOFF.md) for technical decisions and architecture.
+---
+
+**Ready to deploy? Follow [DEPLOYMENT.md](DEPLOYMENT.md)** 🚀
