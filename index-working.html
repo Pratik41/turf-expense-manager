@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turf Expense Manager - Working Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #6366f1;
+            --danger: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #475569;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 2px solid var(--primary);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary);
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .success {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 22px; }
+            .card-grid { grid-template-columns: 1fr; }
+            .stat-value { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>⚽ Turf Expense Manager - WORKING VERSION</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="alert">
+            ✅ This version uses localStorage (device storage) - No API keys needed! Click buttons below to test.
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="nav-tab" data-tab="members">👥 Members</button>
+            <button class="nav-tab" data-tab="sessions">⚽ Sessions</button>
+        </nav>
+
+        <!-- Dashboard -->
+        <section id="dashboard" class="tab-content active">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Total Members</h3>
+                    <div class="stat-value" id="totalMembers">0</div>
+                </div>
+                <div class="card">
+                    <h3>Sessions</h3>
+                    <div class="stat-value" id="totalSessions">0</div>
+                </div>
+                <div class="card">
+                    <h3>Monthly Fee</h3>
+                    <div class="stat-value">₹500</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="margin-bottom: 20px; color: var(--primary);">Members Balances</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboardTable">
+                            <tr>
+                                <td colspan="3" style="text-align: center;">No members yet - Click "Add Member" →</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Members -->
+        <section id="members" class="tab-content">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <h2 style="color: var(--primary);">Members</h2>
+                <button class="btn btn-primary" onclick="openMemberModal()">+ Add Member</button>
+                <button class="btn btn-primary" onclick="addSubscription()">+ Add Subscription (₹500)</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Balance</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTable">
+                        <tr>
+                            <td colspan="3" style="text-align: center;">No members - Add one above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sessions -->
+        <section id="sessions" class="tab-content">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <h2 style="color: var(--primary);">Sessions</h2>
+                <button class="btn btn-primary" onclick="openSessionModal()">+ New Session</button>
+            </div>
+            <div id="sessionsList"></div>
+        </section>
+    </main>
+
+    <!-- Add Member Modal -->
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMemberModal()">&times;</span>
+            <h2>Add Member</h2>
+            <form onsubmit="saveMember(event)">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="memberNameInput" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Session Modal -->
+    <div id="sessionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSessionModal()">&times;</span>
+            <h2>New Session</h2>
+            <form onsubmit="saveSession(event)">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="sessionDateInput" required>
+                </div>
+                <div class="form-group">
+                    <label>Split Amount (₹)</label>
+                    <input type="number" id="splitAmountInput" value="210" required>
+                </div>
+                <div class="form-group">
+                    <label>Members Attended</label>
+                    <div id="memberCheckboxes"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Create</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simple localStorage-based app
+        let app = {
+            members: [],
+            sessions: [],
+            ledger: [],
+
+            init() {
+                this.load();
+                this.setupTabs();
+                this.render();
+            },
+
+            load() {
+                this.members = JSON.parse(localStorage.getItem('members')) || [];
+                this.sessions = JSON.parse(localStorage.getItem('sessions')) || [];
+                this.ledger = JSON.parse(localStorage.getItem('ledger')) || [];
+            },
+
+            save() {
+                localStorage.setItem('members', JSON.stringify(this.members));
+                localStorage.setItem('sessions', JSON.stringify(this.sessions));
+                localStorage.setItem('ledger', JSON.stringify(this.ledger));
+            },
+
+            addMember(name) {
+                this.members.push({ id: Date.now(), name, balance: 0 });
+                this.save();
+                this.render();
+            },
+
+            getBalance(memberId) {
+                return this.ledger
+                    .filter(e => e.memberId === memberId)
+                    .reduce((sum, e) => sum + e.amount, 0);
+            },
+
+            addLedger(memberId, type, amount, reason) {
+                this.ledger.push({
+                    id: Date.now(),
+                    memberId,
+                    type,
+                    amount,
+                    reason,
+                    date: new Date().toISOString()
+                });
+
+                const member = this.members.find(m => m.id === memberId);
+                if (member) {
+                    member.balance = this.getBalance(memberId);
+                }
+                this.save();
+            },
+
+            addSession(date, splitAmount, attendedIds) {
+                this.sessions.push({
+                    id: Date.now(),
+                    date,
+                    splitAmount,
+                    attendees: attendedIds.length
+                });
+
+                attendedIds.forEach(memberId => {
+                    this.addLedger(memberId, 'charge', -splitAmount, `Session on ${date}`);
+                });
+                this.render();
+            },
+
+            setupTabs() {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabName = e.target.dataset.tab;
+                        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                        document.getElementById(tabName).classList.add('active');
+                        e.target.classList.add('active');
+                    });
+                });
+            },
+
+            render() {
+                document.getElementById('totalMembers').textContent = this.members.length;
+                document.getElementById('totalSessions').textContent = this.sessions.length;
+
+                // Dashboard table
+                let dashboardHTML = '';
+                this.members.forEach(m => {
+                    const balance = this.getBalance(m.id);
+                    dashboardHTML += `
+                        <tr>
+                            <td>${m.name}</td>
+                            <td style="color: ${balance < 0 ? '#ef4444' : '#10b981'}; font-weight: 600;">₹${balance}</td>
+                            <td>${balance < -150 ? '⚠️ LOW' : '✅ OK'}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('dashboardTable').innerHTML = dashboardHTML || '<tr><td colspan="3">No members</td></tr>';
+
+                // Members table
+                let membersHTML = '';
+                this.members.forEach(m => {
+                    const balance = this.getBalance(m.id);
+                    membersHTML += `
+                        <tr>
+                            <td>${m.name}</td>
+                            <td style="color: ${balance < 0 ? '#ef4444' : '#10b981'}; font-weight: 600;">₹${balance}</td>
+                            <td>
+                                <button class="btn btn-small btn-primary" onclick="app.addLedgerToMember(${m.id}, 500, 'subscription')">+₹500</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('membersTable').innerHTML = membersHTML || '<tr><td colspan="3">No members</td></tr>';
+
+                // Sessions list
+                let sessionsHTML = '';
+                this.sessions.slice().reverse().forEach(s => {
+                    sessionsHTML += `
+                        <div class="card">
+                            <h3 style="color: var(--primary);">${s.date}</h3>
+                            <p>Split: ₹${s.splitAmount} | Members: ${s.attendees}</p>
+                        </div>
+                    `;
+                });
+                document.getElementById('sessionsList').innerHTML = sessionsHTML || '<div class="card">No sessions</div>';
+
+                // Update checkboxes
+                let checkboxesHTML = '';
+                this.members.forEach(m => {
+                    checkboxesHTML += `<label style="display: block; margin: 8px 0;"><input type="checkbox" value="${m.id}" class="member-checkbox"> ${m.name}</label>`;
+                });
+                document.getElementById('memberCheckboxes').innerHTML = checkboxesHTML;
+            },
+
+            addLedgerToMember(memberId, amount, reason) {
+                this.addLedger(memberId, reason, amount, reason);
+                this.render();
+                alert('✅ Added!');
+            }
+        };
+
+        // Modal functions
+        function openMemberModal() { document.getElementById('memberModal').style.display = 'block'; }
+        function closeMemberModal() { document.getElementById('memberModal').style.display = 'none'; }
+        function openSessionModal() {
+            if (app.members.length === 0) {
+                alert('Add members first!');
+                return;
+            }
+            document.getElementById('sessionModal').style.display = 'block';
+        }
+        function closeSessionModal() { document.getElementById('sessionModal').style.display = 'none'; }
+
+        function saveMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberNameInput').value;
+            app.addMember(name);
+            document.getElementById('memberNameInput').value = '';
+            closeMemberModal();
+        }
+
+        function saveSession(e) {
+            e.preventDefault();
+            const date = document.getElementById('sessionDateInput').value;
+            const split = parseInt(document.getElementById('splitAmountInput').value);
+            const attended = Array.from(document.querySelectorAll('.member-checkbox:checked')).map(cb => parseInt(cb.value));
+
+            if (attended.length === 0) {
+                alert('Select at least one member!');
+                return;
+            }
+
+            app.addSession(date, split, attended);
+            closeSessionModal();
+        }
+
+        function addSubscription() {
+            const memberId = prompt('Enter member name:');
+            if (!memberId) return;
+            const member = app.members.find(m => m.name === memberId);
+            if (member) {
+                app.addLedger(member.id, 'subscription', 500, 'Monthly subscription');
+                app.render();
+                alert('✅ Subscription added!');
+            } else {
+                alert('Member not found!');
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        app.init();
+    </script>
+</body>
+</html>
