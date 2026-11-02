@@ -957,6 +957,7 @@
                 document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
                 document.getElementById(e.target.dataset.tab).classList.add('active');
                 e.target.classList.add('active');
+                updateUI();
             });
         });
     </script>
