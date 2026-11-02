@@ -543,9 +543,10 @@
             if (currentUser.isAdmin) {
                 // Admin members
                 let mList = '';
-                db.users.forEach(u => {
+                db.users.forEach((u, idx) => {
                     const uBal = db.wallets[u.username] || 0;
-                    mList += `<tr><td>${u.username}</td><td>${u.firstName}</td><td>₹${uBal}</td><td>${uBal < 100 ? '⚠️' : '✓'}</td></tr>`;
+                    const deleteBtn = u.isAdmin ? '' : `<button class="btn btn-danger btn-small" onclick="deleteMember(${idx})">Delete</button>`;
+                    mList += `<tr><td>${u.username}</td><td>${u.firstName}</td><td>₹${uBal}</td><td>${uBal < 100 ? '⚠️' : '✓'} ${deleteBtn}</td></tr>`;
                 });
                 document.getElementById('membersList').innerHTML = mList;
 
@@ -559,14 +560,16 @@
         }
 
         function loadMoney() {
-            const amt = parseInt(document.getElementById('loadAmount').value);
-            if (!amt) { alert('Select amount'); return; }
+            const selected = document.getElementById('loadAmount').value;
+            if (!selected || selected === '') { alert('❌ Please select an amount'); return; }
+            const amt = parseInt(selected);
+            if (isNaN(amt) || amt <= 0) { alert('❌ Invalid amount'); return; }
             const txDate = new Date().toISOString();
             if (!db.transactions[currentUser.username]) db.transactions[currentUser.username] = [];
             db.transactions[currentUser.username].push({ date: txDate, type: 'credit', amount: amt });
             db.wallets[currentUser.username] = (db.wallets[currentUser.username] || 0) + amt;
             db.save();
-            alert(`✓ ₹${amt} added!`);
+            alert(`✅ ₹${amt} added successfully!`);
             document.getElementById('loadAmount').value = '';
             updateUI();
         }
@@ -641,6 +644,26 @@
             document.getElementById('firstName').value = '';
             document.getElementById('lastName').value = '';
             document.getElementById('mobile').value = '';
+            updateUI();
+        }
+
+        function deleteMember(idx) {
+            const member = db.users[idx];
+            if (member.isAdmin) { alert('❌ Cannot delete admin'); return; }
+            if (!confirm(`❌ Delete ${member.firstName}? This cannot be undone.`)) return;
+
+            const username = member.username;
+            db.users.splice(idx, 1);
+            delete db.wallets[username];
+            delete db.transactions[username];
+            db.withdrawals = db.withdrawals.filter(w => w.username !== username);
+            db.matches = db.matches.map(m => ({
+                ...m,
+                winners: m.winners.filter(w => w !== username),
+                losers: m.losers.filter(l => l !== username)
+            }));
+            db.save();
+            alert(`✅ ${member.firstName} deleted`);
             updateUI();
         }
 
