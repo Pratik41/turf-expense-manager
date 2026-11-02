@@ -534,7 +534,14 @@
                 <div id="balanceAlert"></div>
 
                 <div class="card">
-                    <h3>Load Money (UPI Payment)</h3>
+                    <h3>Load Money</h3>
+                    <div class="alert alert-info">
+                        💡 <strong>Choose your payment method:</strong>
+                        <ul style="margin-top: 8px; margin-left: 20px;">
+                            <li>Desktop: Use test card OR request admin approval</li>
+                            <li>Mobile: Scan QR code with any UPI app</li>
+                        </ul>
+                    </div>
                     <div class="grid-2">
                         <div class="form-group">
                             <label>Amount</label>
@@ -551,9 +558,32 @@
                             <button class="btn btn-primary" onclick="initiatePayment()">Pay Now</button>
                         </div>
                     </div>
-                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 12px;">
-                        Secure payment via Razorpay. Supports all UPI apps and cards.
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 11px;">
+                        <strong>Test on Desktop:</strong> Use card 4111 1111 1111 1111 | Any future date | Any CVV
                     </p>
+                </div>
+
+                <div class="card">
+                    <h3>Request Manual Payment</h3>
+                    <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
+                        Send payment proof to admin. Admin will verify and credit your account.
+                    </p>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <select id="manualAmount">
+                                <option value="">Select amount</option>
+                                <option value="200">₹200</option>
+                                <option value="300">₹300</option>
+                                <option value="500">₹500</option>
+                                <option value="750">₹750</option>
+                                <option value="1000">₹1000</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-secondary" onclick="requestManualPayment()">Request</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -659,6 +689,11 @@
                 </div>
 
                 <div class="card">
+                    <h3>Manual Payment Requests (Desktop Users)</h3>
+                    <div id="manualPaymentList"></div>
+                </div>
+
+                <div class="card">
                     <h3>Reports & Tools</h3>
                     <button class="btn btn-secondary btn-small" onclick="exportCSV()">📥 Export CSV</button>
                     <button class="btn btn-success btn-small" onclick="sendAlerts()">📱 Send SMS Alerts</button>
@@ -760,6 +795,7 @@
             wallets: JSON.parse(localStorage.getItem('kscc_wallets')) || {},
             transactions: JSON.parse(localStorage.getItem('kscc_transactions')) || {},
             withdrawals: JSON.parse(localStorage.getItem('kscc_withdrawals')) || [],
+            manualPayments: JSON.parse(localStorage.getItem('kscc_manual_payments')) || [],
 
             save() {
                 localStorage.setItem('kscc_users', JSON.stringify(this.users));
@@ -767,6 +803,7 @@
                 localStorage.setItem('kscc_wallets', JSON.stringify(this.wallets));
                 localStorage.setItem('kscc_transactions', JSON.stringify(this.transactions));
                 localStorage.setItem('kscc_withdrawals', JSON.stringify(this.withdrawals));
+                localStorage.setItem('kscc_manual_payments', JSON.stringify(this.manualPayments));
             },
 
             initAdmin() {
@@ -930,6 +967,13 @@
                 html += `<div style="padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--bg-tertiary);"><strong>${w.username}</strong> requested ₹${w.amount}<br><small>${new Date(w.date).toLocaleDateString()}</small><br><button class="btn btn-small btn-success" onclick="approveWithdraw(${i})">Approve</button> <button class="btn btn-small btn-danger" onclick="rejectWithdraw(${i})">Reject</button></div>`;
             });
             document.getElementById('withdrawalList').innerHTML = html || '<p style="color: var(--text-secondary);">No pending requests</p>';
+
+            html = '';
+            db.manualPayments.filter(m => m.status === 'pending').forEach((m, i) => {
+                const idx = db.manualPayments.indexOf(m);
+                html += `<div style="padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--bg-tertiary);"><strong>${m.username}</strong> deposited ₹${m.amount}<br><small>${new Date(m.date).toLocaleDateString()}</small><br><button class="btn btn-small btn-success" onclick="approveManualPayment(${idx})">Approve & Credit</button> <button class="btn btn-small btn-danger" onclick="rejectManualPayment(${idx})">Reject</button></div>`;
+            });
+            document.getElementById('manualPaymentList').innerHTML = html || '<p style="color: var(--text-secondary);">No pending manual payments</p>';
         }
 
         // ===== PAYMENT =====
@@ -966,6 +1010,21 @@
             db.save();
             alert('✅ Withdrawal request sent to admin');
             document.getElementById('withdrawAmt').value = '';
+            updateUI();
+        }
+
+        function requestManualPayment() {
+            const amt = parseInt(document.getElementById('manualAmount').value);
+            if (!amt || amt < 200 || amt > 1000) { alert('Amount must be between ₹200-₹1000'); return; }
+            db.manualPayments.push({
+                username: user.username,
+                amount: amt,
+                date: new Date().toISOString(),
+                status: 'pending'
+            });
+            db.save();
+            alert(`✅ Manual payment request sent!\n\nAmount: ₹${amt}\nStatus: Pending admin approval\n\nAdmin will verify and credit your account.`);
+            document.getElementById('manualAmount').value = '';
             updateUI();
         }
 
@@ -1040,6 +1099,23 @@
             db.withdrawals.splice(i, 1);
             db.save();
             alert('❌ Withdrawal rejected');
+            updateUI();
+        }
+
+        function approveManualPayment(i) {
+            const m = db.manualPayments[i];
+            db.addTx(m.username, 'add', m.amount, 'Manual payment verified');
+            db.manualPayments[i].status = 'approved';
+            db.save();
+            alert(`✅ Approved!\n₹${m.amount} credited to ${m.username}`);
+            updateUI();
+        }
+
+        function rejectManualPayment(i) {
+            const m = db.manualPayments[i];
+            db.manualPayments[i].status = 'rejected';
+            db.save();
+            alert(`❌ Rejected payment request from ${m.username}`);
             updateUI();
         }
 
