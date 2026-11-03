@@ -780,7 +780,7 @@
     </div>
 
     <script>
-        const APP_VERSION = '2.0';
+        const APP_VERSION = '3.0.0';
 
         const db = {
             users: [],
@@ -804,15 +804,18 @@
             },
 
             clearAll() {
+                console.log('🔄 Clearing all old data...');
                 localStorage.removeItem('kscc_users');
                 localStorage.removeItem('kscc_wallets');
                 localStorage.removeItem('kscc_transactions');
                 localStorage.removeItem('kscc_matches');
                 localStorage.removeItem('kscc_savedCreds');
+                localStorage.removeItem('kscc_app_version');
                 this.users = [];
                 this.wallets = {};
                 this.transactions = {};
                 this.matches = [];
+                console.log('✅ All data cleared');
             },
 
             save() {
@@ -824,16 +827,24 @@
             },
 
             initAdmin() {
-                const adminExists = this.users.find(u => u.username === 'admin' && u.password === 'AdminUser9999');
+                // Always ensure admin exists with correct password
+                this.users = this.users.filter(u => u.username !== 'admin');
 
-                if (!adminExists) {
-                    const admin = { id: 1, firstName: 'Admin', lastName: 'User', mobile: '9999999999', username: 'admin', password: 'AdminUser9999', isAdmin: true };
-                    this.users = this.users.filter(u => u.username !== 'admin');
-                    this.users.push(admin);
-                    this.wallets['admin'] = 0;
-                    this.transactions['admin'] = [];
-                    this.save();
-                }
+                const admin = {
+                    id: 1,
+                    firstName: 'Admin',
+                    lastName: 'User',
+                    mobile: '9999999999',
+                    username: 'admin',
+                    password: 'AdminUser9999',
+                    isAdmin: true
+                };
+
+                this.users.push(admin);
+                this.wallets['admin'] = 0;
+                this.transactions['admin'] = [];
+                console.log('✅ Admin ensured: admin / AdminUser9999');
+                this.save();
             }
         };
 
