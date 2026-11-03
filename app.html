@@ -3,197 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turf Expense Manager</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>KSCC - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(135deg, #059669, #7c3aed);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 { font-size: 24px; }
+
+        .header-right { display: flex; gap: 15px; align-items: center; }
+        .user-info { text-align: right; }
+        .user-name { font-weight: 600; }
+
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger { background: #dc2626; color: white; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; }
+
+        .tabs { display: flex; gap: 10px; border-bottom: 2px solid #e2e8f0; margin-bottom: 30px; }
+        .tab-btn { padding: 10px 16px; background: transparent; border: none; cursor: pointer; font-weight: 600; color: #64748b; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: #059669; border-bottom-color: #059669; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 30px; }
+
+        .stat { background: linear-gradient(135deg, #059669, #047857); color: white; padding: 20px; border-radius: 12px; text-align: center; }
+        .stat-value { font-size: 32px; font-weight: 700; }
+        .stat-label { font-size: 12px; margin-top: 8px; }
+
+        .card { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+        .card h3 { margin-bottom: 16px; }
+
+        .success { background: #f0fdf4; color: #15803d; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e; }
+    </style>
 </head>
 <body>
-    <div id="app" class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1>⚽ Turf Expense Manager</h1>
-                <div class="header-actions">
-                    <span id="userName" class="user-name"></span>
-                    <button id="logoutBtn" class="btn btn-small">Logout</button>
+    <header>
+        <h1><i class="fas fa-futbol"></i> KSCC</h1>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-name" id="userName">Admin User</div>
+            </div>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('wallet')">Wallet</button>
+            <button class="tab-btn" onclick="switchTab('members')">Members</button>
+        </div>
+
+        <section id="dashboard" class="tab-content active">
+            <div class="grid">
+                <div class="stat">
+                    <div class="stat-value">₹0</div>
+                    <div class="stat-label">Total Balance</div>
+                </div>
+                <div class="stat" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Members</div>
                 </div>
             </div>
-        </header>
+            <div class="success">
+                <strong>✅ Welcome!</strong> You are logged in as Admin.
+            </div>
+        </section>
 
-        <!-- Navigation Tabs -->
-        <nav class="nav-tabs">
-            <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
-            <button class="nav-tab" data-tab="statement">My Statement</button>
-            <button class="nav-tab admin-only" data-tab="members">Members</button>
-            <button class="nav-tab admin-only" data-tab="sessions">Sessions</button>
-            <button class="nav-tab" data-tab="reports">Reports</button>
-        </nav>
+        <section id="wallet" class="tab-content">
+            <div class="card">
+                <h3>💰 Your Wallet</h3>
+                <p>Balance: <strong>₹0</strong></p>
+            </div>
+        </section>
 
-        <!-- Main Content -->
-        <main class="main-content">
-
-            <!-- Dashboard Tab -->
-            <section id="dashboard" class="tab-content active">
-                <div class="dashboard-cards">
-                    <div class="card card-primary">
-                        <h3>Current Balance</h3>
-                        <p id="balanceAmount" class="amount">₹0</p>
-                        <p id="balanceWarning" class="warning hidden">⚠️ Low Balance</p>
-                    </div>
-                    <div class="card">
-                        <h3>Monthly Fee</h3>
-                        <p class="amount" id="monthlyFee">₹500</p>
-                    </div>
-                    <div class="card">
-                        <h3>Min. Balance</h3>
-                        <p class="amount">₹150</p>
-                    </div>
-                </div>
-
-                <div class="recent-transactions">
-                    <h2>Recent Transactions</h2>
-                    <div id="recentList" class="transaction-list"></div>
-                </div>
-            </section>
-
-            <!-- My Statement Tab -->
-            <section id="statement" class="tab-content">
-                <div class="month-selector">
-                    <select id="statementMonth">
-                        <option value="">Select Month...</option>
-                    </select>
-                </div>
-
-                <div id="statementContent" class="statement-content">
-                    <p>Select a month to view details</p>
-                </div>
-
-                <button id="exportBtn" class="btn btn-primary" style="display: none; margin-top: 20px;">
-                    📥 Export CSV
-                </button>
-            </section>
-
-            <!-- Members Tab (Admin Only) -->
-            <section id="members" class="tab-content">
-                <div class="section-header">
-                    <h2>Manage Members</h2>
-                    <button id="addMemberBtn" class="btn btn-primary">+ Add Member</button>
-                </div>
-
-                <div id="membersTable" class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Balance</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="membersBody"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Sessions Tab (Admin Only) -->
-            <section id="sessions" class="tab-content">
-                <div class="section-header">
-                    <h2>Manage Sessions</h2>
-                    <button id="addSessionBtn" class="btn btn-primary">+ New Session</button>
-                </div>
-
-                <div id="sessionsList" class="sessions-list"></div>
-            </section>
-
-            <!-- Reports Tab -->
-            <section id="reports" class="tab-content">
-                <h2>Monthly Reports</h2>
-                <div class="month-selector">
-                    <select id="reportMonth">
-                        <option value="">Select Month...</option>
-                    </select>
-                </div>
-
-                <div id="reportContent" class="report-content">
-                    <p>Select a month to view report</p>
-                </div>
-            </section>
-
-        </main>
+        <section id="members" class="tab-content">
+            <div class="card">
+                <h3>👥 Members</h3>
+                <p>No members yet</p>
+            </div>
+        </section>
     </div>
-
-    <!-- Modals -->
-
-    <!-- Add Member Modal -->
-    <div id="addMemberModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add New Member</h2>
-            <form id="addMemberForm">
-                <div class="form-group">
-                    <label for="memberName">Name</label>
-                    <input type="text" id="memberName" required>
-                </div>
-                <div class="form-group">
-                    <label for="memberEmail">Email</label>
-                    <input type="email" id="memberEmail" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Add Member</button>
-            </form>
-            <div id="memberError" class="error-message"></div>
-        </div>
-    </div>
-
-    <!-- Add Session Modal -->
-    <div id="addSessionModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>New Session</h2>
-            <form id="addSessionForm">
-                <div class="form-group">
-                    <label for="sessionDate">Date</label>
-                    <input type="date" id="sessionDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="splitAmount">Split Amount (per person)</label>
-                    <input type="number" id="splitAmount" min="0" step="10" required>
-                </div>
-                <div class="form-group">
-                    <label for="totalCost">Total Cost (optional)</label>
-                    <input type="number" id="totalCost" min="0" step="10">
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Create Session</button>
-            </form>
-            <div id="sessionError" class="error-message"></div>
-        </div>
-    </div>
-
-    <!-- Session Details Modal -->
-    <div id="sessionDetailsModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="sessionDetailsTitle">Session Details</h2>
-            <div id="sessionDetailsContent"></div>
-        </div>
-    </div>
-
-    <script src="https://unpkg.com/firebase@10.7.0/app/dist/app.js"></script>
-    <script src="https://unpkg.com/firebase@10.7.0/auth/dist/auth.js"></script>
-    <script src="https://unpkg.com/firebase@10.7.0/firestore/dist/firestore.js"></script>
 
     <script>
-        setTimeout(() => {
-            if (typeof firebase === 'undefined') {
-                console.error('Firebase SDK failed to load');
-            } else {
-                console.log('Firebase SDK loaded');
-            }
-        }, 2000);
-    </script>
+        const user = JSON.parse(localStorage.getItem('kscc_currentUser'));
+        if (!user) {
+            window.location.href = 'login.html';
+        }
 
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/firebase-service.js"></script>
-    <script src="js/app.js"></script>
+        document.getElementById('userName').textContent = user.firstName + ' ' + user.lastName;
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('kscc_currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        console.log('✅ Dashboard loaded!');
+    </script>
 </body>
 </html>

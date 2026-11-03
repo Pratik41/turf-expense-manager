@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSCC - Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            background: linear-gradient(135deg, #059669 0%, #7c3aed 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .logo { font-size: 48px; text-align: center; margin-bottom: 10px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        h1 { text-align: center; color: #059669; margin-bottom: 5px; font-size: 28px; }
+        p { text-align: center; color: #64748b; margin-bottom: 30px; font-size: 14px; }
+
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
+        input:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-login { background: linear-gradient(135deg, #059669, #047857); color: white; }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+        .btn-help { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; }
+
+        .info { background: #f0f4f8; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 15px; }
+        .info strong { color: #059669; }
+        code { background: white; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="logo">⚽</div>
+        <h1>KSCC</h1>
+        <p>Cricket Club Management System</p>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="username" placeholder="admin" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" placeholder="AdminUser9999" required>
+            </div>
+
+            <button type="submit" class="btn btn-login">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+
+        <button class="btn btn-help" onclick="showHelp()">
+            <i class="fas fa-question-circle"></i> Need Help?
+        </button>
+
+        <div class="info">
+            <strong>Demo Credentials:</strong><br>
+            Username: <code>admin</code><br>
+            Password: <code>AdminUser9999</code>
+        </div>
+    </div>
+
+    <script>
+        // Simple database
+        const users = [
+            {
+                id: 1,
+                username: 'admin',
+                password: 'AdminUser9999',
+                firstName: 'Admin',
+                lastName: 'User',
+                isAdmin: true
+            }
+        ];
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            console.log('🔵 Login attempt:', { username, password: '***' });
+
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (!user) {
+                alert('❌ Invalid credentials\n\nUsername: admin\nPassword: AdminUser9999');
+                return;
+            }
+
+            console.log('✅ Login successful!');
+
+            // Save user to localStorage and redirect
+            localStorage.setItem('kscc_currentUser', JSON.stringify(user));
+            window.location.href = 'app.html';
+        }
+
+        function showHelp() {
+            alert('📌 Test Credentials:\n\nUsername: admin\nPassword: AdminUser9999');
+        }
+
+        // Auto-focus username
+        window.addEventListener('load', function() {
+            document.getElementById('username').focus();
+        });
+    </script>
+</body>
+</html>
