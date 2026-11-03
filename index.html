@@ -911,7 +911,7 @@
 
             const last4 = m.slice(-4);
             const username = f + '_' + last4;
-            const password = generateStrongPassword();
+            const password = f + l + last4;
 
             if (db.users.find(u => u.username === username)) {
                 alert('Member already exists!');
