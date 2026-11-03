@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KSCC - Cricket Club Management</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSCC - Test Version</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,1302 +12,189 @@
             --primary: #059669;
             --primary-dark: #047857;
             --secondary: #7c3aed;
-            --danger: #dc2626;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --info: #3b82f6;
             --bg: #ffffff;
             --bg-light: #f8fafc;
             --text: #1e293b;
             --text-light: #64748b;
-            --border: #e2e8f0;
-        }
-
-        body.dark-mode {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --secondary: #a78bfa;
-            --danger: #f87171;
-            --success: #34d399;
-            --warning: #fbbf24;
-            --info: #60a5fa;
-            --bg: #0f172a;
-            --bg-light: #1e293b;
-            --text: #f1f5f9;
-            --text-light: #cbd5e1;
-            --border: #334155;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: var(--text);
-            transition: all 0.3s ease;
             min-height: 100vh;
-        }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-        /* LOGIN PAGE */
-        #loginSection {
-            display: flex !important;
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-
-        body.dark-mode #loginSection {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
         }
 
         .login-container {
-            max-width: 420px;
-            width: 100%;
-            background: var(--bg);
-            border-radius: 20px;
+            background: white;
+            border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            animation: slideUp 0.6s ease;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        .logo { font-size: 48px; text-align: center; margin-bottom: 10px; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 5px; font-size: 28px; }
+        p { text-align: center; color: var(--text-light); margin-bottom: 30px; font-size: 14px; }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            font-size: 48px;
-            margin-bottom: 10px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .login-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .login-header p {
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--text);
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            background: var(--bg-light);
-            color: var(--text);
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--bg);
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
-        }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
 
         .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .btn:active { transform: translateY(0); }
-
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; width: 100%; justify-content: center; }
-        .btn-secondary { background: linear-gradient(135deg, var(--secondary), #6d28d9); color: white; width: 100%; justify-content: center; }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #b91c1c); color: white; }
-        .btn-small { padding: 8px 12px; font-size: 12px; }
-
-        .theme-toggle {
-            width: 44px;
-            height: 44px;
-            border: none;
-            border-radius: 10px;
-            background: var(--bg-light);
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover { background: var(--border); transform: scale(1.1); }
-
-        /* HEADER */
-        header {
-            background: var(--bg);
-            border-bottom: 3px solid var(--primary);
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        h1 { font-size: 24px; font-weight: 700; color: var(--primary); }
-        h2 { font-size: 20px; margin-bottom: 20px; color: var(--text); }
-        h3 { font-size: 16px; margin-bottom: 12px; color: var(--text); }
-
-        .header-right {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .user-info {
-            text-align: right;
-        }
-
-        .user-name { font-weight: 600; font-size: 14px; }
-        .user-role { font-size: 12px; color: var(--text-light); }
-
-        /* TABS */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 24px;
-            overflow-x: auto;
-            padding-bottom: 12px;
-        }
-
-        .tab-btn {
-            padding: 10px 18px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-light);
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tab-btn:hover { color: var(--primary); }
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* CARDS */
-        .card {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover { box-shadow: 0 8px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
-
-        .stat {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .stat:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .stat-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-        .stat-label { font-size: 12px; opacity: 0.9; }
-
-        .stat.secondary { background: linear-gradient(135deg, var(--secondary), #6d28d9); }
-        .stat.danger { background: linear-gradient(135deg, var(--danger), #b91c1c); }
-        .stat.success { background: linear-gradient(135deg, var(--success), #059669); }
-        .stat.info { background: linear-gradient(135deg, var(--info), #2563eb); }
-
-        /* TABLE */
-        .table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            overflow: hidden;
-        }
-
-        thead { background: var(--bg-light); }
-        th { padding: 12px; text-align: left; font-weight: 600; color: var(--text); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        tr:hover { background: var(--bg-light); }
-
-        /* MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            animation: slideUp 0.3s ease;
-        }
-        .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-light); transition: all 0.2s; }
-        .modal-close:hover { color: var(--danger); }
-
-        /* ALERT */
-        .alert {
-            padding: 14px 16px;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideUp 0.3s ease;
-        }
-
-        .alert-danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); border-left: 4px solid var(--danger); }
-        .alert-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-left: 4px solid var(--warning); }
-        .alert-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border-left: 4px solid var(--success); }
-        .alert-info { background: rgba(59, 130, 246, 0.1); color: var(--info); border-left: 4px solid var(--info); }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
         }
 
-        .badge-danger { background: rgba(220, 38, 38, 0.2); color: var(--danger); }
-        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .btn-primary:active { transform: translateY(0); }
 
-        .text-danger { color: var(--danger); }
-        .text-success { color: var(--success); }
-        .text-warning { color: var(--warning); }
+        .info { background: #f0f4f8; padding: 12px; border-radius: 8px; margin-top: 20px; font-size: 12px; color: var(--text); }
 
-        .chart-container { position: relative; height: 300px; margin-bottom: 20px; }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .loader {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .login-container { padding: 30px 20px; }
-            h1 { font-size: 20px; }
-            .btn { padding: 10px 16px; font-size: 12px; }
-            .grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-            .stat-value { font-size: 24px; }
-            th, td { padding: 8px; font-size: 12px; }
-        }
+        #appSection { display: none; padding: 20px; }
+        .dashboard { background: white; padding: 20px; border-radius: 12px; }
+        h2 { color: var(--primary); margin-bottom: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .stat { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 16px; border-radius: 8px; text-align: center; }
+        .stat-value { font-size: 24px; font-weight: 700; }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .btn-logout { background: #dc2626; color: white; }
     </style>
 </head>
 <body>
-    <!-- LOGIN PAGE -->
-    <div id="loginSection">
-        <div class="login-container">
-            <div class="login-header">
-                <div class="logo">⚽</div>
-                <h1>KSCC</h1>
-                <p>Cricket Club Management System</p>
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-user"></i> Username</label>
-                <input type="text" id="username" placeholder="Enter your username">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-lock"></i> Password</label>
-                <div style="display: flex; gap: 8px; align-items: stretch;">
-                    <input type="password" id="password" placeholder="Enter your password" style="flex: 1;">
-                    <button type="button" class="btn" onclick="togglePasswordVisibility()" style="background: var(--border); color: var(--text); padding: 12px 14px; width: auto;">
-                        <i class="fas fa-eye" id="eyeIcon"></i>
-                    </button>
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="login()">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>
-            <button class="btn btn-secondary" onclick="showHelp()" style="margin-top: 10px;">
-                <i class="fas fa-question-circle"></i> Need Help?
-            </button>
+    <!-- LOGIN -->
+    <div id="loginSection" class="login-container">
+        <div class="logo">⚽</div>
+        <h1>KSCC</h1>
+        <p>Cricket Club Management</p>
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="admin">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="AdminUser9999">
+        </div>
+
+        <button class="btn btn-primary" onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+
+        <div class="info">
+            <strong>Test Credentials:</strong><br>
+            Username: <code>admin</code><br>
+            Password: <code>AdminUser9999</code>
         </div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="appSection" style="display: none;">
-        <header>
-            <h1><i class="fas fa-futbol"></i> KSCC</h1>
-            <div class="header-right">
-                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
-                <div class="user-info">
-                    <div class="user-name" id="userDisplay"></div>
-                    <div class="user-role" id="roleDisplay"></div>
-                </div>
-                <button class="btn btn-danger btn-small" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-        </header>
-
-        <div class="container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('dashboard')">
-                    <i class="fas fa-chart-line"></i> Dashboard
-                </button>
-                <button class="tab-btn" onclick="switchTab('wallet')">
-                    <i class="fas fa-wallet"></i> Wallet
-                </button>
-                <button class="tab-btn" onclick="switchTab('matches')">
-                    <i class="fas fa-gamepad"></i> Matches
-                </button>
-                <button class="tab-btn" onclick="switchTab('analytics')">
-                    <i class="fas fa-chart-pie"></i> Analytics
-                </button>
-                <button class="tab-btn" onclick="switchTab('admin')" id="adminBtn" style="display: none;">
-                    <i class="fas fa-cog"></i> Admin
-                </button>
+    <!-- APP -->
+    <div id="appSection">
+        <div class="dashboard">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Dashboard</h2>
+                <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
             </div>
 
-            <!-- DASHBOARD -->
-            <section id="dashboard" class="tab-content active">
-                <h2>📊 Dashboard</h2>
-
-                <div id="adminDashboard" style="display: none;">
-                    <div class="grid">
-                        <div class="stat">
-                            <div class="stat-value" id="totalBalance">₹0</div>
-                            <div class="stat-label">Total Balance</div>
-                        </div>
-                        <div class="stat secondary">
-                            <div class="stat-value" id="totalMembers">0</div>
-                            <div class="stat-label">Members</div>
-                        </div>
-                        <div class="stat danger">
-                            <div class="stat-value" id="lowBalanceCount">0</div>
-                            <div class="stat-label">Low Balance (&lt;₹150)</div>
-                        </div>
-                        <div class="stat info">
-                            <div class="stat-value" id="totalMatches">0</div>
-                            <div class="stat-label">Matches Played</div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>🚨 Players Needing Top-Up</h3>
-                        <div id="lowBalancePlayers"></div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📝 Recent Transactions</h3>
-                        <div style="overflow-x: auto;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Player</th>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Balance</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recentTxs"></tbody>
-                            </table>
-                        </div>
-                    </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">₹0</div>
+                    <div class="stat-label">Balance</div>
                 </div>
-
-                <div id="memberDashboard" style="display: none;">
-                    <div class="grid">
-                        <div class="stat">
-                            <div class="stat-value" id="myBalance">₹0</div>
-                            <div class="stat-label">My Balance</div>
-                        </div>
-                        <div class="stat secondary">
-                            <div class="stat-value" id="myMatches">0</div>
-                            <div class="stat-label">Matches Played</div>
-                        </div>
-                        <div class="stat success">
-                            <div class="stat-value" id="myEarnings">₹0</div>
-                            <div class="stat-label">Total Earnings</div>
-                        </div>
-                        <div class="stat info">
-                            <div class="stat-value" id="myDeductions">₹0</div>
-                            <div class="stat-label">Total Deductions</div>
-                        </div>
-                    </div>
-
-                    <div class="card" id="balanceAlertCard" style="display: none;">
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <div><strong>Low Balance!</strong> Your balance is low. Please request admin to add money.</div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>📊 My Recent Transactions</h3>
-                        <div style="overflow-x: auto;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Balance</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="myTxs"></tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="stat">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Matches</div>
                 </div>
-            </section>
-
-            <!-- WALLET -->
-            <section id="wallet" class="tab-content">
-                <h2>💰 Wallet & Transactions</h2>
-
-                <div class="card">
-                    <h3>Wallet Status</h3>
-                    <div class="grid">
-                        <div class="stat">
-                            <div class="stat-value" id="walletBalance">₹0</div>
-                            <div class="stat-label">Current Balance</div>
-                        </div>
-                    </div>
+                <div class="stat">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Members</div>
                 </div>
-
-                <div class="card">
-                    <h3>📋 Transaction History</h3>
-                    <div class="form-group">
-                        <label>Filter by:</label>
-                        <select id="txFilter">
-                            <option value="all">📅 All Transactions</option>
-                            <option value="month">📆 This Month</option>
-                            <option value="quarter">📊 This Quarter</option>
-                            <option value="year">📈 This Year</option>
-                        </select>
-                    </div>
-                    <div style="overflow-x: auto;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Amount</th>
-                                    <th>Running Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody id="walletTxs"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MATCHES -->
-            <section id="matches" class="tab-content">
-                <h2>🏏 Matches</h2>
-                <button class="btn btn-primary" onclick="showMatchPlayers()" id="createMatchBtn" style="display: none; margin-bottom: 16px;">
-                    <i class="fas fa-plus"></i> Create Match
-                </button>
-                <div id="matchesList"></div>
-            </section>
-
-            <!-- ANALYTICS -->
-            <section id="analytics" class="tab-content">
-                <h2>📊 Analytics & Reports</h2>
-
-                <div class="card">
-                    <h3>📈 Player Attendance (Monthly)</h3>
-                    <div class="form-group">
-                        <label>Select Player:</label>
-                        <select id="analyticsPlayer">
-                            <option value="">👥 All Players</option>
-                        </select>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="attendanceChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>💹 Spending Trends</h3>
-                    <div class="chart-container">
-                        <canvas id="spendingChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>🏆 Top Earners</h3>
-                    <div id="topEarners"></div>
-                </div>
-            </section>
-
-            <!-- ADMIN -->
-            <section id="admin" class="tab-content">
-                <h2>⚙️ Admin Panel</h2>
-
-                <div class="card">
-                    <h3>➕ Create New Member</h3>
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> First Name</label>
-                        <input type="text" id="firstName" placeholder="e.g., Pratik">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Last Name</label>
-                        <input type="text" id="lastName" placeholder="e.g., Sonkusale">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-phone"></i> Mobile Number</label>
-                        <input type="text" id="adminMobile" placeholder="e.g., 9876543210">
-                    </div>
-                    <button class="btn btn-primary" onclick="createMember()" style="width: 100%;">
-                        <i class="fas fa-check-circle"></i> Create Member
-                    </button>
-                </div>
-
-                <div class="card">
-                    <h3>💳 Manage Member Wallet</h3>
-                    <div class="form-group">
-                        <label>Select Member</label>
-                        <select id="manageMemberSelect">
-                            <option value="">Select member</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Amount (₹)</label>
-                        <input type="number" id="txAmount" placeholder="e.g., 500">
-                    </div>
-                    <div class="form-group">
-                        <label>Transaction Type</label>
-                        <select id="txType">
-                            <option value="add">➕ Add Money</option>
-                            <option value="deduct">➖ Deduct Money</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" onclick="updateWallet()" style="width: 100%;">
-                        <i class="fas fa-exchange-alt"></i> Process Transaction
-                    </button>
-                </div>
-
-                <div class="card">
-                    <h3>🔐 Saved Credentials</h3>
-                    <div id="savedCredsList" style="max-height: 300px; overflow-y: auto;"></div>
-                </div>
-
-                <div class="card">
-                    <h3>👥 All Members</h3>
-                    <div style="overflow-x: auto;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Name</th>
-                                    <th>Mobile</th>
-                                    <th>Balance</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminMembersList"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>🎮 Create Match Result</h3>
-                    <div class="form-group">
-                        <label>Match Date</label>
-                        <input type="date" id="matchDateAdmin">
-                    </div>
-                    <div class="form-group">
-                        <label>Venue</label>
-                        <input type="text" id="matchVenueAdmin" placeholder="e.g., Cricket Ground A">
-                    </div>
-                    <div class="form-group">
-                        <label>Total Prize Pool (₹)</label>
-                        <input type="number" id="prizePoolAdmin" placeholder="e.g., 3000">
-                    </div>
-                    <div class="form-group">
-                        <label>Winning Percentage</label>
-                        <select id="splitPercentage">
-                            <option value="">Select split</option>
-                            <option value="70">70% Winners - 30% Losers</option>
-                            <option value="60">60% Winners - 40% Losers</option>
-                            <option value="50">50% Winners - 50% Losers</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-secondary" onclick="showPlayerSelection()" style="width: 100%;">
-                        <i class="fas fa-users"></i> Select Players
-                    </button>
-                </div>
-
-                <div class="card">
-                    <h3>🗑️ System Actions</h3>
-                    <button class="btn btn-danger" onclick="deleteAllData()" style="width: 100%;">
-                        <i class="fas fa-trash"></i> Delete All Data & Reset
-                    </button>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <!-- MODALS -->
-    <div id="credentialsModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('credentialsModal')"><i class="fas fa-times"></i></span>
-            <h3>✅ Member Created Successfully!</h3>
-            <div style="background: var(--bg-light); padding: 16px; border-radius: 12px; margin: 16px 0;">
-                <div style="margin-bottom: 12px;">
-                    <label style="font-size: 12px; color: var(--text-light);">Username</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="credUsername" readonly>
-                        <button class="btn btn-small btn-primary" onclick="copyToClipboard('credUsername')">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                </div>
-                <div style="margin-bottom: 12px;">
-                    <label style="font-size: 12px; color: var(--text-light);">Password</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="credPassword" readonly>
-                        <button class="btn btn-small btn-primary" onclick="copyToClipboard('credPassword')">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="saveCurrentCredentials()" style="width: 100%; margin-bottom: 8px;">
-                    <i class="fas fa-save"></i> Save Credentials
-                </button>
-                <button class="btn btn-secondary" onclick="closeModal('credentialsModal')" style="width: 100%;">
-                    <i class="fas fa-check"></i> Done
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="playerSelectionModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('playerSelectionModal')"><i class="fas fa-times"></i></span>
-            <h3>👥 Select Players for Match</h3>
-
-            <div style="margin-bottom: 16px;">
-                <h4 style="color: var(--success); margin-bottom: 8px;">✅ Winners</h4>
-                <div id="winnersList" style="background: var(--bg-light); padding: 12px; border-radius: 8px; min-height: 60px; border: 2px solid var(--success);"></div>
             </div>
 
-            <div style="margin-bottom: 16px;">
-                <h4 style="color: var(--danger); margin-bottom: 8px;">❌ Losers</h4>
-                <div id="losersList" style="background: var(--bg-light); padding: 12px; border-radius: 8px; min-height: 60px; border: 2px solid var(--danger);"></div>
+            <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; color: #15803d; border-left: 4px solid #22c55e;">
+                <strong>✅ Login Successful!</strong><br>
+                Welcome, <span id="userDisplay">Admin</span>!
             </div>
-
-            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
-                <h4 style="margin-bottom: 8px;">👤 Available Players</h4>
-                <div id="availablePlayersList"></div>
-            </div>
-
-            <button class="btn btn-primary" onclick="finalizeMatch()" style="width: 100%;">
-                <i class="fas fa-check-circle"></i> Complete Match
-            </button>
         </div>
     </div>
 
     <script>
-        const APP_VERSION = '3.0.0';
-
-        const db = {
-            users: [],
-            wallets: {},
-            transactions: {},
-            matches: [],
-
-            loadFromStorage() {
-                const storedVersion = localStorage.getItem('kscc_app_version');
-
-                if (storedVersion !== APP_VERSION) {
-                    console.log('Version mismatch. Clearing old data...');
-                    this.clearAll();
-                    localStorage.setItem('kscc_app_version', APP_VERSION);
-                }
-
-                this.users = JSON.parse(localStorage.getItem('kscc_users')) || [];
-                this.wallets = JSON.parse(localStorage.getItem('kscc_wallets')) || {};
-                this.transactions = JSON.parse(localStorage.getItem('kscc_transactions')) || {};
-                this.matches = JSON.parse(localStorage.getItem('kscc_matches')) || [];
-            },
-
-            clearAll() {
-                console.log('🔄 Clearing all old data...');
-                localStorage.removeItem('kscc_users');
-                localStorage.removeItem('kscc_wallets');
-                localStorage.removeItem('kscc_transactions');
-                localStorage.removeItem('kscc_matches');
-                localStorage.removeItem('kscc_savedCreds');
-                localStorage.removeItem('kscc_app_version');
-                this.users = [];
-                this.wallets = {};
-                this.transactions = {};
-                this.matches = [];
-                console.log('✅ All data cleared');
-            },
-
-            save() {
-                localStorage.setItem('kscc_app_version', APP_VERSION);
-                localStorage.setItem('kscc_users', JSON.stringify(this.users));
-                localStorage.setItem('kscc_wallets', JSON.stringify(this.wallets));
-                localStorage.setItem('kscc_transactions', JSON.stringify(this.transactions));
-                localStorage.setItem('kscc_matches', JSON.stringify(this.matches));
-            },
-
-            initAdmin() {
-                // Always ensure admin exists with correct password
-                this.users = this.users.filter(u => u.username !== 'admin');
-
-                const admin = {
+        // Simple database
+        const database = {
+            users: [
+                {
                     id: 1,
-                    firstName: 'Admin',
-                    lastName: 'User',
-                    mobile: '9999999999',
                     username: 'admin',
                     password: 'AdminUser9999',
+                    firstName: 'Admin',
+                    lastName: 'User',
                     isAdmin: true
-                };
-
-                this.users.push(admin);
-                this.wallets['admin'] = 0;
-                this.transactions['admin'] = [];
-                console.log('✅ Admin ensured: admin / AdminUser9999');
-                this.save();
-            }
+                }
+            ]
         };
-
-        // Load data and ensure admin exists
-        db.loadFromStorage();
-        db.initAdmin();
 
         let currentUser = null;
-        let matchInProgress = { winners: [], losers: [] };
-        let attendanceChart = null;
-        let spendingChart = null;
-        let savedCredentials = JSON.parse(localStorage.getItem('kscc_savedCreds')) || [];
 
-        const theme = localStorage.getItem('kscc_theme') || 'light';
-        if (theme === 'dark') document.body.classList.add('dark-mode');
+        function handleLogin() {
+            console.log('🔵 Login button clicked');
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('kscc_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-        }
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-        function togglePasswordVisibility() {
-            const passwordField = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
+            console.log('📝 Input values:', { username, password });
+            console.log('🔍 Database users:', database.users);
 
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordField.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
-            }
-        }
-
-        function login() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            const user = db.users.find(x => x.username === u && x.password === p);
+            // Find matching user
+            const user = database.users.find(u => u.username === username && u.password === password);
 
             if (!user) {
-                showAlert('❌ Invalid credentials\n\nDefault Admin:\nUsername: admin\nPassword: AdminUser9999', 'danger');
+                console.log('❌ No matching user found');
+                alert('❌ Invalid credentials\n\nUsername: admin\nPassword: AdminUser9999');
                 return;
             }
 
+            console.log('✅ User found:', user);
+
+            // Set current user
             currentUser = user;
+
+            // Show app section
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('appSection').style.display = 'block';
+            document.getElementById('userDisplay').textContent = user.firstName + ' ' + user.lastName;
 
-            if (user.isAdmin) {
-                document.getElementById('adminBtn').style.display = 'flex';
-            } else {
-                document.getElementById('adminBtn').style.display = 'none';
-            }
-
-            updateUI();
+            console.log('✅ Login successful!');
         }
 
-        function logout() {
+        function handleLogout() {
+            console.log('🔴 Logout clicked');
             currentUser = null;
             document.getElementById('appSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('loginSection').style.display = 'block';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            console.log('✅ Logged out');
         }
 
-        function showHelp() {
-            alert('📌 Default Admin Credentials:\n\nUsername: admin\nPassword: AdminUser9999\n\nAdmin will create user accounts for each member.');
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-            event.target.closest('.tab-btn').classList.add('active');
-            updateUI();
-        }
-
-        function showAlert(msg, type = 'info') {
-            console.log(msg);
-            const icons = { success: '✅', danger: '❌', warning: '⚠️', info: 'ℹ️' };
-            alert(icons[type] + ' ' + msg);
-        }
-
-        function updateUI() {
-            if (!currentUser) return;
-
-            document.getElementById('userDisplay').textContent = currentUser.firstName + ' ' + currentUser.lastName;
-            document.getElementById('roleDisplay').textContent = currentUser.isAdmin ? '👑 Admin' : '👤 Member';
-
-            if (currentUser.isAdmin) {
-                updateAdminDashboard();
-                updateAdminPanel();
-            } else {
-                updateMemberDashboard();
-                updateMemberWallet();
-            }
-        }
-
-        function updateMemberDashboard() {
-            const bal = db.wallets[currentUser.username] || 0;
-            document.getElementById('myBalance').textContent = `₹${bal}`;
-
-            const txs = db.transactions[currentUser.username] || [];
-            const earnings = txs.filter(t => t.type === 'match_earnings').reduce((s, t) => s + t.amount, 0);
-            const deductions = txs.filter(t => t.type === 'admin_deduction').reduce((s, t) => s + Math.abs(t.amount), 0);
-
-            document.getElementById('myMatches').textContent = db.matches.filter(m => m.winners.includes(currentUser.username) || m.losers.includes(currentUser.username)).length;
-            document.getElementById('myEarnings').textContent = `₹${earnings}`;
-            document.getElementById('myDeductions').textContent = `₹${deductions}`;
-
-            if (bal < 150) {
-                document.getElementById('balanceAlertCard').style.display = 'block';
-            } else {
-                document.getElementById('balanceAlertCard').style.display = 'none';
-            }
-
-            let txHtml = '';
-            txs.slice().reverse().slice(0, 10).forEach(t => {
-                const icon = t.amount > 0 ? '➕' : '➖';
-                const color = t.amount > 0 ? 'green' : 'red';
-                txHtml += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type.replace(/_/g, ' ')}</td><td style="color: ${color}; font-weight: 600;">${icon} ₹${Math.abs(t.amount)}</td><td>₹${t.balance}</td></tr>`;
-            });
-            document.getElementById('myTxs').innerHTML = txHtml || '<tr><td colspan="4" style="text-align: center; color: var(--text-light);">No transactions</td></tr>';
-        }
-
-        function updateMemberWallet() {
-            const bal = db.wallets[currentUser.username] || 0;
-            document.getElementById('walletBalance').textContent = `₹${bal}`;
-
-            const filter = document.getElementById('txFilter').value;
-            const txs = db.transactions[currentUser.username] || [];
-            const now = new Date();
-            let filtered = txs;
-
-            if (filter === 'month') {
-                filtered = txs.filter(t => {
-                    const d = new Date(t.date);
-                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-                });
-            } else if (filter === 'quarter') {
-                const q = Math.floor(now.getMonth() / 3);
-                filtered = txs.filter(t => {
-                    const d = new Date(t.date);
-                    return Math.floor(d.getMonth() / 3) === q && d.getFullYear() === now.getFullYear();
-                });
-            } else if (filter === 'year') {
-                filtered = txs.filter(t => new Date(t.date).getFullYear() === now.getFullYear());
-            }
-
-            let txHtml = '';
-            filtered.slice().reverse().forEach(t => {
-                const icon = t.amount > 0 ? '➕' : '➖';
-                const color = t.amount > 0 ? 'green' : 'red';
-                txHtml += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type.replace(/_/g, ' ')}</td><td style="color: ${color}; font-weight: 600;">${icon} ₹${Math.abs(t.amount)}</td><td>₹${t.balance}</td></tr>`;
-            });
-            document.getElementById('walletTxs').innerHTML = txHtml || '<tr><td colspan="4" style="text-align: center; color: var(--text-light);">No transactions</td></tr>';
-        }
-
-        function updateAdminDashboard() {
-            const totalBal = Object.values(db.wallets).reduce((s, b) => s + b, 0);
-            const lowBalance = db.users.filter(u => !u.isAdmin && (db.wallets[u.username] || 0) < 150).length;
-
-            document.getElementById('totalBalance').textContent = `₹${totalBal}`;
-            document.getElementById('totalMembers').textContent = db.users.filter(u => !u.isAdmin).length;
-            document.getElementById('lowBalanceCount').textContent = lowBalance;
-            document.getElementById('totalMatches').textContent = db.matches.length;
-
-            let lowHtml = '';
-            db.users.filter(u => !u.isAdmin && (db.wallets[u.username] || 0) < 150).forEach(u => {
-                const bal = db.wallets[u.username] || 0;
-                const badge = bal < 100 ? '<span class="badge badge-danger">🔴 Critical</span>' : '<span class="badge badge-warning">🟡 Low</span>';
-                lowHtml += `<div style="padding: 10px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div><strong>${u.firstName}</strong> - ₹${bal}</div>${badge}</div>`;
-            });
-            document.getElementById('lowBalancePlayers').innerHTML = lowHtml || '<div style="color: var(--text-light); text-align: center; padding: 20px;">✅ All players have sufficient balance!</div>';
-
-            let txHtml = '';
-            let allTxs = [];
-            for (let u of db.users) {
-                const txs = db.transactions[u.username] || [];
-                txs.forEach(t => {
-                    allTxs.push({ ...t, username: u.username, firstName: u.firstName });
-                });
-            }
-            allTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
-            allTxs.slice(0, 15).forEach(t => {
-                const icon = t.amount > 0 ? '➕' : '➖';
-                const color = t.amount > 0 ? 'green' : 'red';
-                txHtml += `<tr><td>${t.firstName}</td><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type.replace(/_/g, ' ')}</td><td style="color: ${color}; font-weight: 600;">${icon} ₹${Math.abs(t.amount)}</td><td>₹${t.balance}</td></tr>`;
-            });
-            document.getElementById('recentTxs').innerHTML = txHtml;
-        }
-
-        function updateAdminPanel() {
-            const select = document.getElementById('manageMemberSelect');
-            select.innerHTML = '<option value="">Select member</option>';
-            db.users.filter(u => !u.isAdmin).forEach(u => {
-                select.innerHTML += `<option value="${u.username}">${u.firstName} (${u.username})</option>`;
-            });
-
-            const analyticsSelect = document.getElementById('analyticsPlayer');
-            analyticsSelect.innerHTML = '<option value="">All Players</option>';
-            db.users.filter(u => !u.isAdmin).forEach(u => {
-                analyticsSelect.innerHTML += `<option value="${u.username}">${u.firstName}</option>`;
-            });
-
-            let credsHtml = '';
-            savedCredentials.forEach(cred => {
-                const user = db.users.find(u => u.username === cred.username);
-                if (user) {
-                    const pwDisplay = '•'.repeat(cred.password.length);
-                    credsHtml += `<div style="padding: 10px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--primary);">
-                        <div style="font-weight: 600; margin-bottom: 4px;">👤 ${user.firstName}</div>
-                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 6px;">
-                            Username: <span style="font-family: monospace; color: var(--primary);">${cred.username}</span>
-                        </div>
-                        <div style="font-size: 12px; color: var(--text-light);">
-                            Password: <span style="font-family: monospace; color: var(--text-light);">${pwDisplay}</span>
-                            <button class="btn btn-small btn-primary" onclick="showPassword('${cred.username}')" style="margin-left: 4px;">👁️ Show</button>
-                            <button class="btn btn-small btn-danger" onclick="removeCredential('${cred.username}')" style="margin-left: 4px;">❌ Remove</button>
-                        </div>
-                    </div>`;
-                }
-            });
-            document.getElementById('savedCredsList').innerHTML = credsHtml || '<div style="color: var(--text-light); text-align: center; padding: 20px;">📭 No saved credentials yet</div>';
-
-            let membersList = '';
-            db.users.filter(u => !u.isAdmin).forEach(u => {
-                const bal = db.wallets[u.username] || 0;
-                let badge = '🟢 OK';
-                if (bal < 100) badge = '<span class="badge badge-danger">🔴 Critical</span>';
-                else if (bal < 150) badge = '<span class="badge badge-warning">🟡 Low</span>';
-                membersList += `<tr><td>${u.username}</td><td>${u.firstName} ${u.lastName}</td><td>${u.mobile}</td><td>₹${bal}</td><td>${badge}</td></tr>`;
-            });
-            document.getElementById('adminMembersList').innerHTML = membersList;
-        }
-
-        let createdMemberCreds = {};
-
-        function createMember() {
-            const f = document.getElementById('firstName').value.trim();
-            const l = document.getElementById('lastName').value.trim();
-            const m = document.getElementById('adminMobile').value.trim();
-
-            if (!f || !l || !m || m.length < 4) { showAlert('Fill all fields properly', 'danger'); return; }
-
-            const last4 = m.slice(-4);
-            const username = f + '_' + last4;
-            const password = f + l + last4;
-
-            if (db.users.find(u => u.username === username)) {
-                showAlert('Member already exists!', 'danger');
-                return;
-            }
-
-            db.users.push({ id: Date.now(), firstName: f, lastName: l, mobile: m, username: username, password: password, isAdmin: false });
-            db.wallets[username] = 0;
-            db.transactions[username] = [];
-            db.save();
-
-            createdMemberCreds = { username, password };
-            document.getElementById('credUsername').value = username;
-            document.getElementById('credPassword').value = password;
-            document.getElementById('credentialsModal').classList.add('active');
-
-            document.getElementById('firstName').value = '';
-            document.getElementById('lastName').value = '';
-            document.getElementById('adminMobile').value = '';
-            updateUI();
-        }
-
-        function saveCurrentCredentials() {
-            if (!createdMemberCreds.username) return;
-            savedCredentials = savedCredentials.filter(c => c.username !== createdMemberCreds.username);
-            savedCredentials.push(createdMemberCreds);
-            localStorage.setItem('kscc_savedCreds', JSON.stringify(savedCredentials));
-            showAlert('✅ Credentials saved!', 'success');
-            closeModal('credentialsModal');
-        }
-
-        function copyToClipboard(id) {
-            const elem = document.getElementById(id);
-            elem.select();
-            document.execCommand('copy');
-            showAlert('Copied to clipboard!', 'success');
-        }
-
-        function showPassword(username) {
-            const cred = savedCredentials.find(c => c.username === username);
-            if (!cred) return;
-            alert(`🔐 ${username}\nPassword: ${cred.password}`);
-        }
-
-        function removeCredential(username) {
-            if (!confirm('Remove from saved list?')) return;
-            savedCredentials = savedCredentials.filter(c => c.username !== username);
-            localStorage.setItem('kscc_savedCreds', JSON.stringify(savedCredentials));
-            updateUI();
-        }
-
-        function updateWallet() {
-            const username = document.getElementById('manageMemberSelect').value;
-            const amount = parseInt(document.getElementById('txAmount').value);
-            const type = document.getElementById('txType').value;
-
-            if (!username || !amount || amount <= 0) { showAlert('Fill all fields', 'danger'); return; }
-
-            const user = db.users.find(u => u.username === username);
-            const txType = type === 'add' ? 'admin_credit' : 'admin_deduction';
-            const txAmount = type === 'add' ? amount : -amount;
-            const newBalance = (db.wallets[username] || 0) + txAmount;
-
-            db.wallets[username] = newBalance;
-            if (!db.transactions[username]) db.transactions[username] = [];
-            db.transactions[username].push({
-                date: new Date().toISOString(),
-                type: txType,
-                amount: txAmount,
-                balance: newBalance
-            });
-            db.save();
-
-            showAlert(`${type === 'add' ? '✅ Added' : '✅ Deducted'} ₹${amount}`, 'success');
-            document.getElementById('txAmount').value = '';
-            updateUI();
-        }
-
-        function deleteAllData() {
-            if (!confirm('⚠️ DELETE ALL DATA?\n\nThis will permanently delete everything!\n\nCannot be undone!')) return;
-
-            localStorage.removeItem('kscc_users');
-            localStorage.removeItem('kscc_wallets');
-            localStorage.removeItem('kscc_transactions');
-            localStorage.removeItem('kscc_matches');
-            localStorage.removeItem('kscc_savedCreds');
-
-            db.users = [];
-            db.wallets = {};
-            db.transactions = {};
-            db.matches = [];
-            db.initAdmin();
-
-            showAlert('All data deleted! App reset.', 'success');
-            logout();
-        }
-
-        function showPlayerSelection() {
-            if (!document.getElementById('splitPercentage').value) {
-                showAlert('Select split percentage', 'danger');
-                return;
-            }
-            const split = parseInt(document.getElementById('splitPercentage').value);
-            matchInProgress = { winners: [], losers: [], split: split };
-            document.getElementById('playerSelectionModal').classList.add('active');
-            renderPlayerSelection();
-        }
-
-        function renderPlayerSelection() {
-            const available = db.users.filter(u => !u.isAdmin && !matchInProgress.winners.includes(u.username) && !matchInProgress.losers.includes(u.username));
-
-            let winnersHtml = '';
-            matchInProgress.winners.forEach(u => {
-                const user = db.users.find(x => x.username === u);
-                winnersHtml += `<div style="display: inline-block; padding: 8px 12px; background: linear-gradient(135deg, var(--success), #059669); color: white; border-radius: 6px; margin: 4px; font-size: 12px; font-weight: 600;">✅ ${user.firstName} <button onclick="removeFromWinners('${u}')" style="background: none; border: none; color: white; cursor: pointer; margin-left: 6px; font-weight: bold;">×</button></div>`;
-            });
-            document.getElementById('winnersList').innerHTML = winnersHtml || '<div style="color: var(--text-light); padding: 10px;">No winners selected</div>';
-
-            let losersHtml = '';
-            matchInProgress.losers.forEach(u => {
-                const user = db.users.find(x => x.username === u);
-                losersHtml += `<div style="display: inline-block; padding: 8px 12px; background: linear-gradient(135deg, var(--danger), #b91c1c); color: white; border-radius: 6px; margin: 4px; font-size: 12px; font-weight: 600;">❌ ${user.firstName} <button onclick="removeFromLosers('${u}')" style="background: none; border: none; color: white; cursor: pointer; margin-left: 6px; font-weight: bold;">×</button></div>`;
-            });
-            document.getElementById('losersList').innerHTML = losersHtml || '<div style="color: var(--text-light); padding: 10px;">No losers selected</div>';
-
-            let availableHtml = '';
-            available.forEach(u => {
-                availableHtml += `<div style="padding: 10px; background: var(--bg); border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);"><span>👤 ${u.firstName}</span><div><button class="btn btn-small btn-success" onclick="addToWinners('${u.username}')" style="margin-right: 4px;">✅ Winner</button> <button class="btn btn-small btn-danger" onclick="addToLosers('${u.username}')">❌ Loser</button></div></div>`;
-            });
-            document.getElementById('availablePlayersList').innerHTML = availableHtml || '<div style="text-align: center; color: var(--text-light); padding: 20px;">All players selected!</div>';
-        }
-
-        function addToWinners(u) { matchInProgress.winners.push(u); renderPlayerSelection(); }
-        function addToLosers(u) { matchInProgress.losers.push(u); renderPlayerSelection(); }
-        function removeFromWinners(u) { matchInProgress.winners = matchInProgress.winners.filter(x => x !== u); renderPlayerSelection(); }
-        function removeFromLosers(u) { matchInProgress.losers = matchInProgress.losers.filter(x => x !== u); renderPlayerSelection(); }
-
-        function finalizeMatch() {
-            if (matchInProgress.winners.length === 0 || matchInProgress.losers.length === 0) {
-                showAlert('Select at least one winner and one loser', 'danger');
-                return;
-            }
-
-            const prizePool = parseInt(document.getElementById('prizePoolAdmin').value);
-            if (!prizePool || prizePool <= 0) { showAlert('Enter valid prize pool', 'danger'); return; }
-
-            const split = matchInProgress.split;
-            const winnersPrize = Math.round(prizePool * split / 100 / matchInProgress.winners.length);
-            const losersPrize = Math.round(prizePool * (100 - split) / 100 / matchInProgress.losers.length);
-
-            const match = {
-                id: Date.now(),
-                date: new Date(document.getElementById('matchDateAdmin').value).toISOString(),
-                venue: document.getElementById('matchVenueAdmin').value,
-                prizePool: prizePool,
-                split: split,
-                winners: matchInProgress.winners,
-                losers: matchInProgress.losers,
-                winnerAmount: winnersPrize,
-                loserAmount: losersPrize
-            };
-
-            matchInProgress.winners.forEach(u => {
-                const newBal = (db.wallets[u] || 0) + winnersPrize;
-                db.wallets[u] = newBal;
-                if (!db.transactions[u]) db.transactions[u] = [];
-                db.transactions[u].push({
-                    date: match.date,
-                    type: 'match_earnings',
-                    amount: winnersPrize,
-                    balance: newBal
-                });
-            });
-
-            matchInProgress.losers.forEach(u => {
-                const newBal = (db.wallets[u] || 0) + losersPrize;
-                db.wallets[u] = newBal;
-                if (!db.transactions[u]) db.transactions[u] = [];
-                db.transactions[u].push({
-                    date: match.date,
-                    type: 'match_earnings',
-                    amount: losersPrize,
-                    balance: newBal
-                });
-            });
-
-            db.matches.push(match);
-            db.save();
-
-            showAlert(`✅ Match Completed!`, 'success');
-            closeModal('playerSelectionModal');
-            document.getElementById('matchDateAdmin').value = '';
-            document.getElementById('matchVenueAdmin').value = '';
-            document.getElementById('prizePoolAdmin').value = '';
-            document.getElementById('splitPercentage').value = '';
-            updateUI();
-        }
-
-        function showMatchPlayers() {
-            showPlayerSelection();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        window.onclick = (e) => {
-            if (e.target.classList.contains('modal')) e.target.classList.remove('active');
-        };
-
-        document.getElementById('analyticsPlayer').addEventListener('change', updateAnalytics);
-        document.getElementById('txFilter').addEventListener('change', updateMemberWallet);
-
-        function updateAnalytics() {}
+        // Auto-focus on load
+        window.addEventListener('load', function() {
+            console.log('🚀 Page loaded');
+            console.log('📊 Database initialized with users:', database.users);
+            document.getElementById('username').focus();
+        });
     </script>
 </body>
 </html>
