@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KSCC - Cricket Club</title>
+    <title>KSCC - Cricket Club Management</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,6 +15,7 @@
             --danger: #dc2626;
             --success: #10b981;
             --warning: #f59e0b;
+            --info: #3b82f6;
             --bg: #ffffff;
             --bg-light: #f3f4f6;
             --text: #111827;
@@ -28,6 +30,7 @@
             --danger: #f87171;
             --success: #34d399;
             --warning: #fbbf24;
+            --info: #60a5fa;
             --bg: #111827;
             --bg-light: #1f2937;
             --text: #f9fafb;
@@ -42,12 +45,11 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        .container { max-width: 800px; margin: 0 auto; padding: 16px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 16px; }
 
-        /* HEADER */
         header {
             background: var(--bg-light);
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
             padding: 16px;
             display: flex;
             justify-content: space-between;
@@ -60,6 +62,8 @@
         }
 
         h1 { font-size: 24px; font-weight: 700; color: var(--primary); }
+        h2 { font-size: 18px; margin-bottom: 16px; }
+        h3 { font-size: 16px; margin-bottom: 12px; }
 
         .header-right {
             display: flex;
@@ -79,8 +83,6 @@
 
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
-        .btn-primary:active { transform: scale(0.98); }
-
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: var(--warning); color: white; }
@@ -96,7 +98,6 @@
             font-size: 18px;
         }
 
-        /* TABS */
         .tabs {
             display: flex;
             gap: 8px;
@@ -126,7 +127,6 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* CARDS */
         .card {
             background: var(--bg-light);
             border-radius: 8px;
@@ -148,7 +148,6 @@
         .stat-value { font-size: 28px; font-weight: 700; color: var(--primary); }
         .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
-        /* FORMS */
         .form-group {
             margin-bottom: 12px;
         }
@@ -160,7 +159,7 @@
             font-size: 13px;
         }
 
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border);
@@ -168,18 +167,15 @@
             background: var(--bg);
             color: var(--text);
             font-size: 14px;
-            font-family: inherit;
         }
 
         input:focus { outline: none; border-color: var(--primary); }
 
-        /* TABLE */
         .table { width: 100%; border-collapse: collapse; font-size: 13px; }
         thead { background: var(--bg-light); }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
         tr:hover { background: var(--bg-light); }
 
-        /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
         .modal-content {
@@ -193,30 +189,52 @@
         }
         .modal-close { float: right; font-size: 24px; cursor: pointer; }
 
-        /* ALERT */
         .alert {
             padding: 12px;
             border-radius: 6px;
             margin-bottom: 12px;
             font-size: 13px;
         }
+        .alert-danger { background: rgba(220, 38, 38, 0.1); color: var(--danger); }
         .alert-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
         .alert-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .alert-info { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-
-        .text-success { color: var(--success); }
-        .text-danger { color: var(--danger); }
+        .alert-info { background: rgba(59, 130, 246, 0.1); color: var(--info); }
 
         .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
         .badge-danger { background: rgba(220, 38, 38, 0.2); color: var(--danger); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
 
-        @media (max-width: 480px) {
+        .text-danger { color: var(--danger); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+
+        .chart-container { position: relative; height: 300px; margin-bottom: 20px; }
+
+        .split-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .split-column {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .split-column h4 { margin-bottom: 8px; font-size: 13px; }
+        .split-column div { padding: 4px; font-size: 12px; }
+
+        @media (max-width: 768px) {
             h1 { font-size: 20px; }
-            .btn { padding: 6px 12px; font-size: 13px; }
+            .btn { padding: 6px 12px; font-size: 12px; }
             .grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
             .stat-value { font-size: 24px; }
-            th, td { padding: 8px 4px; font-size: 12px; }
+            th, td { padding: 8px 4px; font-size: 11px; }
+            .split-columns { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -225,8 +243,8 @@
     <div id="loginSection" class="container" style="padding-top: 40px;">
         <div style="max-width: 400px; margin: 0 auto;">
             <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="font-size: 32px; margin-bottom: 8px;">KSCC</h1>
-                <p style="color: var(--text-light);">Cricket Club Management</p>
+                <h1 style="font-size: 32px; margin-bottom: 8px;">⚽ KSCC</h1>
+                <p style="color: var(--text-light);">Cricket Club Management System</p>
             </div>
             <div class="card">
                 <div class="form-group">
@@ -238,7 +256,7 @@
                     <input type="password" id="password" placeholder="Enter password">
                 </div>
                 <button class="btn btn-primary" onclick="login()" style="width: 100%;">Login</button>
-                <button class="btn btn-secondary" onclick="showForgot()" style="width: 100%; margin-top: 10px;">Forgot Password?</button>
+                <button class="btn btn-secondary" onclick="showHelp()" style="width: 100%; margin-top: 10px;">Need Help?</button>
             </div>
         </div>
     </div>
@@ -249,7 +267,10 @@
             <h1>⚽ KSCC</h1>
             <div class="header-right">
                 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-                <span style="font-size: 13px;" id="userInfo"></span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 600;" id="userDisplay"></div>
+                    <div style="font-size: 11px; color: var(--text-light);" id="roleDisplay"></div>
+                </div>
                 <button class="btn btn-danger btn-small" onclick="logout()">Logout</button>
             </div>
         </header>
@@ -259,67 +280,128 @@
                 <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
                 <button class="tab-btn" onclick="switchTab('wallet')">Wallet</button>
                 <button class="tab-btn" onclick="switchTab('matches')">Matches</button>
+                <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
                 <button class="tab-btn" onclick="switchTab('admin')" id="adminBtn" style="display: none;">Admin</button>
             </div>
 
             <!-- DASHBOARD -->
             <section id="dashboard" class="tab-content active">
-                <div class="grid">
-                    <div class="stat">
-                        <div class="stat-value" id="balanceDisplay">₹0</div>
-                        <div class="stat-label">Balance</div>
+                <h2>Dashboard</h2>
+
+                <div id="adminDashboard" style="display: none;">
+                    <div class="grid">
+                        <div class="stat">
+                            <div class="stat-value" id="totalBalance">₹0</div>
+                            <div class="stat-label">Total Balance</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="totalMembers">0</div>
+                            <div class="stat-label">Members</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="lowBalanceCount">0</div>
+                            <div class="stat-label">Low Balance (&lt;₹150)</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="totalMatches">0</div>
+                            <div class="stat-label">Matches Played</div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <div class="stat-value" id="matchesDisplay">0</div>
-                        <div class="stat-label">Matches</div>
+
+                    <div class="card">
+                        <h3>🚨 Players Needing Top-Up (Balance < ₹150)</h3>
+                        <div id="lowBalancePlayers"></div>
                     </div>
-                    <div class="stat">
-                        <div class="stat-value" id="membersDisplay">0</div>
-                        <div class="stat-label">Members</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="earningsDisplay">₹0</div>
-                        <div class="stat-label">Earnings</div>
+
+                    <div class="card">
+                        <h3>Recent Transactions</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentTxs"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h3 style="margin-bottom: 12px;">Recent Matches</h3>
-                    <div id="recentMatches" style="color: var(--text-light);">No matches yet</div>
+                <div id="memberDashboard" style="display: none;">
+                    <div class="grid">
+                        <div class="stat">
+                            <div class="stat-value" id="myBalance">₹0</div>
+                            <div class="stat-label">My Balance</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="myMatches">0</div>
+                            <div class="stat-label">Matches Played</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="myEarnings">₹0</div>
+                            <div class="stat-label">Total Earnings</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="myDeductions">₹0</div>
+                            <div class="stat-label">Total Deductions</div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="balanceAlertCard" style="display: none;">
+                        <div class="alert alert-danger">
+                            <strong>⚠️ Low Balance!</strong> Your balance is low. Please request admin to add money.
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>My Recent Transactions</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="myTxs"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- WALLET -->
             <section id="wallet" class="tab-content">
-                <div id="balanceAlert"></div>
+                <h2>My Wallet & Transactions</h2>
 
                 <div class="card">
-                    <h3 style="margin-bottom: 12px;">Load Money (₹200-₹1000)</h3>
+                    <h3>Wallet Status</h3>
+                    <div class="grid">
+                        <div class="stat">
+                            <div class="stat-value" id="walletBalance">₹0</div>
+                            <div class="stat-label">Current Balance</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Transaction History</h3>
                     <div class="form-group">
-                        <label>Amount</label>
-                        <select id="loadAmount">
-                            <option value="">Select</option>
-                            <option value="200">₹200</option>
-                            <option value="300">₹300</option>
-                            <option value="500">₹500</option>
-                            <option value="1000">₹1000</option>
+                        <label>Filter by:</label>
+                        <select id="txFilter">
+                            <option value="all">All Transactions</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" onclick="loadMoney()" style="width: 100%;">Add Money</button>
-                    <p style="font-size: 12px; color: var(--text-light); margin-top: 8px;">✓ Instant credit | Manual verification by admin</p>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 12px;">Withdraw</h3>
-                    <div class="form-group">
-                        <label>Amount (Min ₹100)</label>
-                        <input type="number" id="withdrawAmount" min="100">
-                    </div>
-                    <button class="btn btn-secondary" onclick="withdraw()" style="width: 100%;">Request Withdrawal</button>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 12px;">Transaction History</h3>
                     <div style="overflow-x: auto;">
                         <table class="table">
                             <thead>
@@ -327,9 +409,10 @@
                                     <th>Date</th>
                                     <th>Type</th>
                                     <th>Amount</th>
+                                    <th>Running Balance</th>
                                 </tr>
                             </thead>
-                            <tbody id="txHistory"></tbody>
+                            <tbody id="walletTxs"></tbody>
                         </table>
                     </div>
                 </div>
@@ -337,31 +420,90 @@
 
             <!-- MATCHES -->
             <section id="matches" class="tab-content">
-                <button class="btn btn-primary" onclick="showCreateMatch()" id="createMatchBtn" style="display: none; width: 100%; margin-bottom: 16px;">Create Match</button>
+                <h2>Matches</h2>
+                <button class="btn btn-primary" onclick="showCreateMatch()" id="createMatchBtn" style="display: none; margin-bottom: 16px;">+ Create Match</button>
                 <div id="matchesList"></div>
+            </section>
+
+            <!-- ANALYTICS -->
+            <section id="analytics" class="tab-content">
+                <h2>Analytics & Reports</h2>
+
+                <div class="card">
+                    <h3>Player Attendance (Monthly)</h3>
+                    <div class="form-group">
+                        <label>Select Player:</label>
+                        <select id="analyticsPlayer">
+                            <option value="">All Players</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Spending Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Top Earners</h3>
+                    <div id="topEarners"></div>
+                </div>
             </section>
 
             <!-- ADMIN -->
             <section id="admin" class="tab-content">
+                <h2>Admin Panel</h2>
+
                 <div class="card">
-                    <h3 style="margin-bottom: 12px;">Add Member</h3>
+                    <h3>Create New Member</h3>
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" id="firstName">
+                        <input type="text" id="firstName" placeholder="e.g., Pratik">
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" id="lastName">
+                        <input type="text" id="lastName" placeholder="e.g., Sonkusale">
                     </div>
                     <div class="form-group">
-                        <label>Mobile</label>
-                        <input type="text" id="mobile">
+                        <label>Mobile Number</label>
+                        <input type="text" id="adminMobile" placeholder="e.g., 9876543210">
                     </div>
-                    <button class="btn btn-primary" onclick="addMember()" style="width: 100%;">Create Member</button>
+                    <button class="btn btn-primary" onclick="createMember()" style="width: 100%;">Create Member</button>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-bottom: 12px;">All Members</h3>
+                    <h3>Manage Member Wallet</h3>
+                    <div class="form-group">
+                        <label>Select Member</label>
+                        <select id="manageMemberSelect">
+                            <option value="">Select member</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="txAmount" placeholder="e.g., 500">
+                    </div>
+                    <div class="form-group">
+                        <label>Transaction Type</label>
+                        <select id="txType">
+                            <option value="add">Add Money</option>
+                            <option value="deduct">Deduct Money</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason (optional)</label>
+                        <input type="text" id="txReason" placeholder="e.g., Match fee, Topup, Withdrawal">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateWallet()" style="width: 100%;">Process Transaction</button>
+                </div>
+
+                <div class="card">
+                    <h3>All Members</h3>
                     <div style="overflow-x: auto;">
                         <table class="table">
                             <thead>
@@ -370,106 +512,66 @@
                                     <th>Name</th>
                                     <th>Mobile</th>
                                     <th>Balance</th>
-                                    <th>Actions</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="membersList"></tbody>
+                            <tbody id="adminMembersList"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-bottom: 12px;">Add Credits</h3>
+                    <h3>Create Match Result</h3>
                     <div class="form-group">
-                        <label>Member</label>
-                        <select id="creditMember">
-                            <option value="">Select member</option>
+                        <label>Match Date</label>
+                        <input type="date" id="matchDateAdmin">
+                    </div>
+                    <div class="form-group">
+                        <label>Venue</label>
+                        <input type="text" id="matchVenueAdmin" placeholder="e.g., Cricket Ground A">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Prize Pool (₹)</label>
+                        <input type="number" id="prizePoolAdmin" placeholder="e.g., 3000">
+                    </div>
+                    <div class="form-group">
+                        <label>Winning Percentage</label>
+                        <select id="splitPercentage">
+                            <option value="">Select split</option>
+                            <option value="70">70% Winners - 30% Losers</option>
+                            <option value="60">60% Winners - 40% Losers</option>
+                            <option value="50">50% Winners - 50% Losers</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Amount (₹)</label>
-                        <input type="number" id="creditAmount" min="1" placeholder="e.g., 500">
-                    </div>
-                    <button class="btn btn-primary" onclick="addCredit()" style="width: 100%;">Add Credit</button>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 12px;">Withdrawal Requests</h3>
-                    <div id="withdrawalsList"></div>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 12px;">Export Data</h3>
-                    <button class="btn btn-secondary" onclick="exportMembers()" style="width: 100%; margin-bottom: 8px;">📥 Export Members (CSV)</button>
-                    <button class="btn btn-secondary" onclick="exportTransactions()" style="width: 100%; margin-bottom: 8px;">📥 Export Transactions (CSV)</button>
-                    <button class="btn btn-secondary" onclick="exportMatches()" style="width: 100%;">📥 Export Matches (CSV)</button>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 12px;">SMS Logs</h3>
-                    <div style="max-height: 300px; overflow-y: auto; background: var(--bg); padding: 8px; border-radius: 4px;">
-                        <div id="smsLogs" style="font-size: 12px; color: var(--text-light);">No SMS sent yet</div>
-                    </div>
+                    <button class="btn btn-secondary" onclick="showMatchPlayers()" style="width: 100%; margin-bottom: 12px;">Select Players</button>
+                    <div id="playerSelectionArea"></div>
                 </div>
             </section>
         </div>
     </div>
 
     <!-- MODALS -->
-    <div id="createMatchModal" class="modal">
+    <div id="playerSelectionModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('createMatchModal')">&times;</span>
-            <h3 style="margin-bottom: 12px;">Create Match</h3>
-            <div class="form-group">
-                <label>Date</label>
-                <input type="date" id="matchDate">
-            </div>
-            <div class="form-group">
-                <label>Venue</label>
-                <input type="text" id="matchVenue" placeholder="Venue name">
-            </div>
-            <div class="form-group">
-                <label>Prize Pool (₹)</label>
-                <input type="number" id="matchAmount" placeholder="e.g., 3000">
-            </div>
-            <div class="form-group">
-                <label>Split (%)</label>
-                <select id="matchSplit">
-                    <option value="">Select</option>
-                    <option value="40">40% Winners</option>
-                    <option value="30">30% Winners</option>
-                    <option value="50">50% Winners</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Winners (usernames, comma-separated)</label>
-                <input type="text" id="matchWinners" placeholder="user1, user2">
-            </div>
-            <div class="form-group">
-                <label>Losers (usernames, comma-separated)</label>
-                <input type="text" id="matchLosers" placeholder="user3, user4">
-            </div>
-            <button class="btn btn-primary" onclick="createMatch()" style="width: 100%;">Create</button>
-        </div>
-    </div>
+            <span class="modal-close" onclick="closeModal('playerSelectionModal')">&times;</span>
+            <h3>Select Players for Match</h3>
 
-    <div id="editMemberModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal('editMemberModal')">&times;</span>
-            <h3 style="margin-bottom: 12px;">Edit Member</h3>
-            <div class="form-group">
-                <label>First Name</label>
-                <input type="text" id="editFirstName">
+            <div style="margin-bottom: 16px;">
+                <h4 style="color: var(--success); margin-bottom: 8px;">Winners</h4>
+                <div id="winnersList" style="background: var(--bg-light); padding: 12px; border-radius: 6px; min-height: 80px;"></div>
             </div>
-            <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" id="editLastName">
+
+            <div style="margin-bottom: 16px;">
+                <h4 style="color: var(--danger); margin-bottom: 8px;">Losers</h4>
+                <div id="losersList" style="background: var(--bg-light); padding: 12px; border-radius: 6px; min-height: 80px;"></div>
             </div>
-            <div class="form-group">
-                <label>Mobile</label>
-                <input type="text" id="editMobile">
+
+            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 12px;">
+                <h4 style="margin-bottom: 8px;">Available Players</h4>
+                <div id="availablePlayersList"></div>
             </div>
-            <button class="btn btn-primary" onclick="saveMemberEdit()" style="width: 100%;">Save Changes</button>
+
+            <button class="btn btn-primary" onclick="finalizeMatch()" style="width: 100%;">Complete Match</button>
         </div>
     </div>
 
@@ -479,70 +581,33 @@
             wallets: JSON.parse(localStorage.getItem('kscc_wallets')) || {},
             transactions: JSON.parse(localStorage.getItem('kscc_transactions')) || {},
             matches: JSON.parse(localStorage.getItem('kscc_matches')) || [],
-            withdrawals: JSON.parse(localStorage.getItem('kscc_withdrawals')) || [],
-            smsLogs: JSON.parse(localStorage.getItem('kscc_smsLogs')) || [],
 
             save() {
                 localStorage.setItem('kscc_users', JSON.stringify(this.users));
                 localStorage.setItem('kscc_wallets', JSON.stringify(this.wallets));
                 localStorage.setItem('kscc_transactions', JSON.stringify(this.transactions));
                 localStorage.setItem('kscc_matches', JSON.stringify(this.matches));
-                localStorage.setItem('kscc_withdrawals', JSON.stringify(this.withdrawals));
-                localStorage.setItem('kscc_smsLogs', JSON.stringify(this.smsLogs));
             },
 
             initAdmin() {
                 if (this.users.length === 0) {
-                    const user = { id: 1, firstName: 'Admin', lastName: 'User', mobile: '9999999999', username: 'admin', password: 'Admin@123', isAdmin: true };
-                    this.users.push(user);
+                    const admin = { id: 1, firstName: 'Admin', lastName: 'User', mobile: '9999999999', username: 'admin', password: 'AdminUser9999', isAdmin: true };
+                    this.users.push(admin);
                     this.wallets['admin'] = 0;
                     this.transactions['admin'] = [];
                     this.save();
                 }
-            },
-
-            genUsername(first) {
-                let u = first.toLowerCase() + '_' + Math.floor(Math.random() * 9000000 + 1000000);
-                while (this.users.find(x => x.username === u)) u = first.toLowerCase() + '_' + Math.floor(Math.random() * 9000000 + 1000000);
-                return u;
-            },
-
-            genPassword() {
-                const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
-                let p = '';
-                for (let i = 0; i < 8; i++) p += c[Math.floor(Math.random() * c.length)];
-                return p;
             }
         };
 
         db.initAdmin();
         let currentUser = null;
-        let editingUserIdx = null;
+        let matchInProgress = { winners: [], losers: [] };
+        let attendanceChart = null;
+        let spendingChart = null;
+
         const theme = localStorage.getItem('kscc_theme') || 'light';
         if (theme === 'dark') document.body.classList.add('dark-mode');
-
-        // SMS Configuration (Add your Twilio credentials here)
-        const SMS_CONFIG = {
-            accountSid: 'YOUR_TWILIO_ACCOUNT_SID',
-            authToken: 'YOUR_TWILIO_AUTH_TOKEN',
-            phoneNumber: 'YOUR_TWILIO_PHONE_NUMBER',
-            enabled: false
-        };
-
-        function sendSMS(phone, message) {
-            const log = `[${new Date().toLocaleTimeString()}] To: ${phone}\n${message}`;
-            db.smsLogs.unshift(log);
-            db.save();
-            updateUI();
-
-            if (SMS_CONFIG.enabled && SMS_CONFIG.accountSid !== 'YOUR_TWILIO_ACCOUNT_SID') {
-                fetch('https://api.twilio.com/2010-04-01/Accounts/' + SMS_CONFIG.accountSid + '/Messages.json', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Basic ' + btoa(SMS_CONFIG.accountSid + ':' + SMS_CONFIG.authToken) },
-                    body: 'From=' + SMS_CONFIG.phoneNumber + '&To=' + phone + '&Body=' + encodeURIComponent(message)
-                }).catch(e => console.log('SMS sent (simulated)'));
-            }
-        }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -550,15 +615,26 @@
         }
 
         function login() {
-            const u = document.getElementById('username').value;
+            const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value;
             const user = db.users.find(x => x.username === u && x.password === p);
-            if (!user) { alert('Invalid credentials'); return; }
+
+            if (!user) { alert('❌ Invalid credentials'); return; }
+
             currentUser = user;
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('appSection').style.display = 'block';
-            if (user.isAdmin) document.getElementById('adminBtn').style.display = 'block';
-            document.getElementById('createMatchBtn').style.display = user.isAdmin ? 'block' : 'none';
+
+            if (user.isAdmin) {
+                document.getElementById('adminBtn').style.display = 'block';
+                document.getElementById('adminDashboard').style.display = 'block';
+                document.getElementById('memberDashboard').style.display = 'none';
+            } else {
+                document.getElementById('adminBtn').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('memberDashboard').style.display = 'block';
+            }
+
             updateUI();
         }
 
@@ -570,15 +646,8 @@
             document.getElementById('password').value = '';
         }
 
-        function showForgot() {
-            const f = prompt('First name?');
-            const l = prompt('Last name?');
-            const m = prompt('Mobile?');
-            const user = db.users.find(x => x.firstName === f && x.lastName === l && x.mobile === m);
-            if (!user) { alert('Not found'); return; }
-            const msg = `Your KSCC Credentials\nUsername: ${user.username}\nPassword: ${user.password}`;
-            sendSMS('+91' + m, msg);
-            alert(`✅ Credentials sent to ${m}`);
+        function showHelp() {
+            alert('Default Admin Credentials:\n\nUsername: admin\nPassword: AdminUser9999\n\nAdmin will create user accounts for each member.');
         }
 
         function switchTab(tab) {
@@ -590,280 +659,291 @@
         }
 
         function updateUI() {
-            document.getElementById('userInfo').textContent = currentUser.firstName;
-            const bal = db.wallets[currentUser.username] || 0;
-            document.getElementById('balanceDisplay').textContent = `₹${bal}`;
+            if (!currentUser) return;
 
-            const txs = db.transactions[currentUser.username] || [];
-            const earnings = txs.filter(t => t.type === 'earnings').reduce((s, t) => s + t.amount, 0);
-            document.getElementById('earningsDisplay').textContent = `₹${earnings}`;
-            document.getElementById('matchesDisplay').textContent = db.matches.length;
-            document.getElementById('membersDisplay').textContent = db.users.length;
-
-            const balanceAlert = bal < 100 ? `<div class="alert alert-warning">⚠️ Low balance (₹${bal}). Top up to participate.</div>` : '';
-            document.getElementById('balanceAlert').innerHTML = balanceAlert;
-
-            let txHtml = '';
-            txs.slice().reverse().forEach(t => {
-                txHtml += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type}</td><td class="${t.amount > 0 ? 'text-success' : 'text-danger'}">₹${Math.abs(t.amount)}</td></tr>`;
-            });
-            document.getElementById('txHistory').innerHTML = txHtml || '<tr><td colspan="3" style="text-align: center;">No transactions</td></tr>';
-
-            let mHtml = '';
-            db.matches.forEach(m => {
-                mHtml += `<div class="card"><strong>${m.venue}</strong> - ${new Date(m.date).toLocaleDateString()}<br><small>Pool: ₹${m.amount} | Split: ${m.split}-${100-m.split}</small></div>`;
-            });
-            document.getElementById('matchesList').innerHTML = mHtml || '<div class="card">No matches yet</div>';
-
-            const recent = db.matches.slice(-3).reverse();
-            let rHtml = '';
-            recent.forEach(m => {
-                rHtml += `<div style="padding: 8px 0; border-bottom: 1px solid var(--border);"><strong>${m.venue}</strong> - ${new Date(m.date).toLocaleDateString()}</div>`;
-            });
-            document.getElementById('recentMatches').innerHTML = rHtml || 'No recent matches';
+            document.getElementById('userDisplay').textContent = currentUser.firstName + ' ' + currentUser.lastName;
+            document.getElementById('roleDisplay').textContent = currentUser.isAdmin ? 'Admin' : 'Member';
 
             if (currentUser.isAdmin) {
-                let mList = '';
-                db.users.forEach((u, idx) => {
-                    const uBal = db.wallets[u.username] || 0;
-                    const actions = u.isAdmin ? '-' : `<button class="btn btn-primary btn-small" onclick="showEditMember(${idx})" style="margin-right: 4px;">Edit</button><button class="btn btn-danger btn-small" onclick="deleteMember(${idx})">Delete</button>`;
-                    mList += `<tr><td>${u.username}</td><td>${u.firstName} ${u.lastName}</td><td>${u.mobile}</td><td>₹${uBal}</td><td>${actions}</td></tr>`;
-                });
-                document.getElementById('membersList').innerHTML = mList;
-
-                const creditMemberSelect = document.getElementById('creditMember');
-                creditMemberSelect.innerHTML = '<option value="">Select member</option>';
-                db.users.filter(u => !u.isAdmin).forEach((u, idx) => {
-                    creditMemberSelect.innerHTML += `<option value="${idx}">${u.firstName} (${u.username})</option>`;
-                });
-
-                let wList = '';
-                db.withdrawals.forEach((w, i) => {
-                    const member = db.users.find(x => x.username === w.username);
-                    wList += `<div style="padding: 8px; background: var(--bg-light); border-radius: 6px; margin-bottom: 8px;"><strong>${member.firstName}</strong> - ₹${w.amount}<br><button class="btn btn-small btn-success" onclick="approveWithdraw(${i})" style="margin-right: 4px;">Approve</button><button class="btn btn-small btn-danger" onclick="rejectWithdraw(${i})">Reject</button></div>`;
-                });
-                document.getElementById('withdrawalsList').innerHTML = wList || 'No requests';
-
-                let smsHtml = '';
-                db.smsLogs.slice(0, 20).forEach(log => {
-                    smsHtml += `<div style="padding: 4px 0; border-bottom: 1px solid var(--border); white-space: pre-wrap;">${log}</div>`;
-                });
-                document.getElementById('smsLogs').innerHTML = smsHtml || 'No SMS sent yet';
+                updateAdminDashboard();
+                updateAdminPanel();
+            } else {
+                updateMemberDashboard();
+                updateMemberWallet();
             }
         }
 
-        function loadMoney() {
-            const selected = document.getElementById('loadAmount').value;
-            if (!selected || selected === '') { alert('❌ Please select an amount'); return; }
-            const amt = parseInt(selected);
-            if (isNaN(amt) || amt <= 0) { alert('❌ Invalid amount'); return; }
+        function updateMemberDashboard() {
+            const bal = db.wallets[currentUser.username] || 0;
+            document.getElementById('myBalance').textContent = `₹${bal}`;
 
-            const txDate = new Date().toISOString();
-            if (!db.transactions[currentUser.username]) db.transactions[currentUser.username] = [];
-            db.transactions[currentUser.username].push({ date: txDate, type: 'credit', amount: amt });
-            db.wallets[currentUser.username] = (db.wallets[currentUser.username] || 0) + amt;
-            db.save();
+            const txs = db.transactions[currentUser.username] || [];
+            const earnings = txs.filter(t => t.type === 'match_earnings').reduce((s, t) => s + t.amount, 0);
+            const deductions = txs.filter(t => t.type === 'match_deduction').reduce((s, t) => s + Math.abs(t.amount), 0);
 
-            sendSMS('+91' + currentUser.mobile, `₹${amt} added to your KSCC wallet. New balance: ₹${db.wallets[currentUser.username]}`);
-            alert(`✅ ₹${amt} added successfully!`);
-            document.getElementById('loadAmount').value = '';
-            updateUI();
-        }
+            document.getElementById('myMatches').textContent = db.matches.filter(m => m.winners.includes(currentUser.username) || m.losers.includes(currentUser.username)).length;
+            document.getElementById('myEarnings').textContent = `₹${earnings}`;
+            document.getElementById('myDeductions').textContent = `₹${deductions}`;
 
-        function withdraw() {
-            const amt = parseInt(document.getElementById('withdrawAmount').value);
-            if (!amt || amt < 100) { alert('Min ₹100'); return; }
-            if ((db.wallets[currentUser.username] || 0) < amt) { alert('Insufficient balance'); return; }
-            db.withdrawals.push({ username: currentUser.username, amount: amt, date: new Date().toISOString(), status: 'pending' });
-            db.save();
-
-            sendSMS('+91' + currentUser.mobile, `Withdrawal request ₹${amt} sent to admin for approval.`);
-            alert('✓ Request sent to admin');
-            document.getElementById('withdrawAmount').value = '';
-            updateUI();
-        }
-
-        function showCreateMatch() {
-            document.getElementById('matchDate').valueAsDate = new Date();
-            document.getElementById('createMatchModal').classList.add('active');
-        }
-
-        function createMatch() {
-            const m = {
-                id: Date.now(),
-                date: document.getElementById('matchDate').value,
-                venue: document.getElementById('matchVenue').value,
-                amount: parseInt(document.getElementById('matchAmount').value),
-                split: parseInt(document.getElementById('matchSplit').value),
-                winners: document.getElementById('matchWinners').value.split(',').map(x => x.trim()),
-                losers: document.getElementById('matchLosers').value.split(',').map(x => x.trim())
-            };
-
-            for (let u of [...m.winners, ...m.losers]) {
-                if (!db.users.find(x => x.username === u)) { alert(`User ${u} not found`); return; }
+            if (bal < 150) {
+                document.getElementById('balanceAlertCard').style.display = 'block';
+            } else {
+                document.getElementById('balanceAlertCard').style.display = 'none';
             }
 
-            const w = Math.round((m.amount * m.split) / 100 / m.winners.length);
-            const l = Math.round((m.amount * (100 - m.split)) / 100 / m.losers.length);
-
-            m.winners.forEach(u => {
-                if (!db.transactions[u]) db.transactions[u] = [];
-                db.transactions[u].push({ date: new Date().toISOString(), type: 'earnings', amount: w });
-                db.wallets[u] = (db.wallets[u] || 0) + w;
-                const member = db.users.find(x => x.username === u);
-                sendSMS('+91' + member.mobile, `🎉 You won! ₹${w} added to your wallet (Match: ${m.venue})`);
+            let txHtml = '';
+            txs.slice().reverse().slice(0, 10).forEach(t => {
+                const amount = t.amount > 0 ? `<span class="text-success">+₹${t.amount}</span>` : `<span class="text-danger">-₹${Math.abs(t.amount)}</span>`;
+                txHtml += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type.replace(/_/g, ' ')}</td><td>${amount}</td><td>₹${t.balance}</td></tr>`;
             });
-
-            m.losers.forEach(u => {
-                if (!db.transactions[u]) db.transactions[u] = [];
-                db.transactions[u].push({ date: new Date().toISOString(), type: 'earnings', amount: l });
-                db.wallets[u] = (db.wallets[u] || 0) + l;
-                const member = db.users.find(x => x.username === u);
-                sendSMS('+91' + member.mobile, `⚽ Match ended. ₹${l} added to your wallet (Match: ${m.venue})`);
-            });
-
-            db.matches.push(m);
-            db.save();
-            alert(`✓ Match created!\nWinners: ₹${w} each\nLosers: ₹${l} each`);
-            closeModal('createMatchModal');
-            updateUI();
+            document.getElementById('myTxs').innerHTML = txHtml || '<tr><td colspan="4">No transactions</td></tr>';
         }
 
-        function addMember() {
-            const f = document.getElementById('firstName').value;
-            const l = document.getElementById('lastName').value;
-            const m = document.getElementById('mobile').value;
-            if (!f || !l || !m) { alert('Fill all fields'); return; }
+        function updateMemberWallet() {
+            const bal = db.wallets[currentUser.username] || 0;
+            document.getElementById('walletBalance').textContent = `₹${bal}`;
 
-            const u = db.genUsername(f);
-            const p = db.genPassword();
-            db.users.push({ id: Date.now(), firstName: f, lastName: l, mobile: m, username: u, password: p, isAdmin: false });
-            db.wallets[u] = 0;
-            db.transactions[u] = [];
+            const filter = document.getElementById('txFilter').value;
+            const txs = db.transactions[currentUser.username] || [];
+            const now = new Date();
+            let filtered = txs;
+
+            if (filter === 'month') {
+                filtered = txs.filter(t => {
+                    const d = new Date(t.date);
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                });
+            } else if (filter === 'quarter') {
+                const q = Math.floor(now.getMonth() / 3);
+                filtered = txs.filter(t => {
+                    const d = new Date(t.date);
+                    return Math.floor(d.getMonth() / 3) === q && d.getFullYear() === now.getFullYear();
+                });
+            } else if (filter === 'year') {
+                filtered = txs.filter(t => new Date(t.date).getFullYear() === now.getFullYear());
+            }
+
+            let txHtml = '';
+            filtered.slice().reverse().forEach(t => {
+                const amount = t.amount > 0 ? `<span class="text-success">+₹${t.amount}</span>` : `<span class="text-danger">-₹${Math.abs(t.amount)}</span>`;
+                txHtml += `<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type.replace(/_/g, ' ')}</td><td>${amount}</td><td>₹${t.balance}</td></tr>`;
+            });
+            document.getElementById('walletTxs').innerHTML = txHtml || '<tr><td colspan="4">No transactions</td></tr>';
+        }
+
+        function updateAdminDashboard() {
+            const totalBal = Object.values(db.wallets).reduce((s, b) => s + b, 0);
+            const lowBalance = db.users.filter(u => !u.isAdmin && (db.wallets[u.username] || 0) < 150).length;
+
+            document.getElementById('totalBalance').textContent = `₹${totalBal}`;
+            document.getElementById('totalMembers').textContent = db.users.filter(u => !u.isAdmin).length;
+            document.getElementById('lowBalanceCount').textContent = lowBalance;
+            document.getElementById('totalMatches').textContent = db.matches.length;
+
+            let lowHtml = '';
+            db.users.filter(u => !u.isAdmin && (db.wallets[u.username] || 0) < 150).forEach(u => {
+                const bal = db.wallets[u.username] || 0;
+                const badge = bal < 100 ? '<span class="badge badge-danger">Critical</span>' : '<span class="badge badge-warning">Low</span>';
+                lowHtml += `<div style="padding: 8px; background: var(--bg); border-radius: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div><strong>${u.firstName}</strong> - ₹${bal}</div>${badge}</div>`;
+            });
+            document.getElementById('lowBalancePlayers').innerHTML = lowHtml || '<div style="color: var(--text-light);">All players have sufficient balance ✓</div>';
+
+            let txHtml = '';
+            let allTxs = [];
+            for (let u of db.users) {
+                const txs = db.transactions[u.username] || [];
+                txs.forEach(t => {
+                    allTxs.push({ ...t, username: u.username, firstName: u.firstName });
+                });
+            }
+            allTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
+            allTxs.slice(0, 15).forEach(t => {
+                const amount = t.amount > 0 ? `<span class="text-success">+₹${t.amount}</span>` : `<span class="text-danger">-₹${Math.abs(t.amount)}</span>`;
+                txHtml += `<tr><td>${t.firstName}</td><td>${new Date(t.date).toLocaleDateString()}</td><td>${t.type.replace(/_/g, ' ')}</td><td>${amount}</td><td>₹${t.balance}</td></tr>`;
+            });
+            document.getElementById('recentTxs').innerHTML = txHtml;
+        }
+
+        function updateAdminPanel() {
+            const select = document.getElementById('manageMemberSelect');
+            select.innerHTML = '<option value="">Select member</option>';
+            db.users.filter(u => !u.isAdmin).forEach(u => {
+                select.innerHTML += `<option value="${u.username}">${u.firstName} (${u.username})</option>`;
+            });
+
+            const analyticsSelect = document.getElementById('analyticsPlayer');
+            analyticsSelect.innerHTML = '<option value="">All Players</option>';
+            db.users.filter(u => !u.isAdmin).forEach(u => {
+                analyticsSelect.innerHTML += `<option value="${u.username}">${u.firstName}</option>`;
+            });
+
+            let membersList = '';
+            db.users.filter(u => !u.isAdmin).forEach(u => {
+                const bal = db.wallets[u.username] || 0;
+                const badge = bal < 100 ? '<span class="badge badge-danger">Critical</span>' : bal < 150 ? '<span class="badge badge-warning">Low</span>' : '<span class="badge badge-success">OK</span>';
+                membersList += `<tr><td>${u.username}</td><td>${u.firstName} ${u.lastName}</td><td>${u.mobile}</td><td>₹${bal}</td><td>${badge}</td></tr>`;
+            });
+            document.getElementById('adminMembersList').innerHTML = membersList;
+        }
+
+        function createMember() {
+            const f = document.getElementById('firstName').value.trim();
+            const l = document.getElementById('lastName').value.trim();
+            const m = document.getElementById('adminMobile').value.trim();
+
+            if (!f || !l || !m || m.length < 4) { alert('Fill all fields properly'); return; }
+
+            const last4 = m.slice(-4);
+            const username = f + '_' + last4;
+            const password = f + l + last4;
+
+            if (db.users.find(u => u.username === username)) {
+                alert('Member already exists!');
+                return;
+            }
+
+            db.users.push({ id: Date.now(), firstName: f, lastName: l, mobile: m, username: username, password: password, isAdmin: false });
+            db.wallets[username] = 0;
+            db.transactions[username] = [];
             db.save();
 
-            const msg = `Welcome to KSCC!\nUsername: ${u}\nPassword: ${p}\nStart playing cricket now!`;
-            sendSMS('+91' + m, msg);
-
-            alert(`✓ Member created!\n\nUsername: ${u}\nPassword: ${p}\nSMS sent to ${m}`);
+            alert(`✅ Member Created!\n\nUsername: ${username}\nPassword: ${password}`);
             document.getElementById('firstName').value = '';
             document.getElementById('lastName').value = '';
-            document.getElementById('mobile').value = '';
+            document.getElementById('adminMobile').value = '';
             updateUI();
         }
 
-        function showEditMember(idx) {
-            editingUserIdx = idx;
-            const u = db.users[idx];
-            document.getElementById('editFirstName').value = u.firstName;
-            document.getElementById('editLastName').value = u.lastName;
-            document.getElementById('editMobile').value = u.mobile;
-            document.getElementById('editMemberModal').classList.add('active');
-        }
+        function updateWallet() {
+            const username = document.getElementById('manageMemberSelect').value;
+            const amount = parseInt(document.getElementById('txAmount').value);
+            const type = document.getElementById('txType').value;
+            const reason = document.getElementById('txReason').value || (type === 'add' ? 'Admin credit' : 'Admin deduction');
 
-        function saveMemberEdit() {
-            const u = db.users[editingUserIdx];
-            u.firstName = document.getElementById('editFirstName').value;
-            u.lastName = document.getElementById('editLastName').value;
-            u.mobile = document.getElementById('editMobile').value;
-            db.save();
-            alert('✅ Member updated');
-            closeModal('editMemberModal');
-            updateUI();
-        }
+            if (!username || !amount || amount <= 0) { alert('Fill all fields'); return; }
 
-        function addCredit() {
-            const idx = document.getElementById('creditMember').value;
-            const amt = parseInt(document.getElementById('creditAmount').value);
-            if (idx === '' || !amt || amt <= 0) { alert('Select member and amount'); return; }
+            const user = db.users.find(u => u.username === username);
+            const txType = type === 'add' ? 'admin_credit' : 'admin_deduction';
+            const txAmount = type === 'add' ? amount : -amount;
+            const newBalance = (db.wallets[username] || 0) + txAmount;
 
-            const member = db.users[idx];
-            db.wallets[member.username] = (db.wallets[member.username] || 0) + amt;
-            if (!db.transactions[member.username]) db.transactions[member.username] = [];
-            db.transactions[member.username].push({ date: new Date().toISOString(), type: 'credit', amount: amt });
-            db.save();
-
-            sendSMS('+91' + member.mobile, `Admin added ₹${amt} to your account. New balance: ₹${db.wallets[member.username]}`);
-            alert(`✅ ₹${amt} added to ${member.firstName}`);
-            document.getElementById('creditAmount').value = '';
-            document.getElementById('creditMember').value = '';
-            updateUI();
-        }
-
-        function deleteMember(idx) {
-            const member = db.users[idx];
-            if (member.isAdmin) { alert('❌ Cannot delete admin'); return; }
-            if (!confirm(`❌ Delete ${member.firstName}? This cannot be undone.`)) return;
-
-            const username = member.username;
-            db.users.splice(idx, 1);
-            delete db.wallets[username];
-            delete db.transactions[username];
-            db.withdrawals = db.withdrawals.filter(w => w.username !== username);
-            db.save();
-            alert(`✅ ${member.firstName} deleted`);
-            updateUI();
-        }
-
-        function approveWithdraw(i) {
-            const w = db.withdrawals[i];
-            const member = db.users.find(x => x.username === w.username);
-            db.wallets[w.username] = (db.wallets[w.username] || 0) - w.amount;
-            if (!db.transactions[w.username]) db.transactions[w.username] = [];
-            db.transactions[w.username].push({ date: new Date().toISOString(), type: 'withdrawal', amount: -w.amount });
-            db.withdrawals.splice(i, 1);
-            db.save();
-
-            sendSMS('+91' + member.mobile, `✅ Your withdrawal of ₹${w.amount} has been approved. Balance: ₹${db.wallets[w.username]}`);
-            alert(`✅ Approved ₹${w.amount}`);
-            updateUI();
-        }
-
-        function rejectWithdraw(i) {
-            const w = db.withdrawals[i];
-            const member = db.users.find(x => x.username === w.username);
-            db.withdrawals.splice(i, 1);
-            db.save();
-
-            sendSMS('+91' + member.mobile, `❌ Your withdrawal request of ₹${w.amount} has been rejected. Balance: ₹${db.wallets[w.username]}`);
-            alert(`❌ Rejected`);
-            updateUI();
-        }
-
-        function exportMembers() {
-            let csv = 'Username,First Name,Last Name,Mobile,Balance\n';
-            db.users.forEach(u => {
-                const bal = db.wallets[u.username] || 0;
-                csv += `${u.username},${u.firstName},${u.lastName},${u.mobile},${bal}\n`;
+            db.wallets[username] = newBalance;
+            if (!db.transactions[username]) db.transactions[username] = [];
+            db.transactions[username].push({
+                date: new Date().toISOString(),
+                type: txType,
+                amount: txAmount,
+                balance: newBalance,
+                reason: reason
             });
-            downloadCSV(csv, 'kscc_members.csv');
+            db.save();
+
+            alert(`✅ ${type === 'add' ? 'Added' : 'Deducted'} ₹${amount}\n${user.firstName}'s balance: ₹${newBalance}`);
+            document.getElementById('txAmount').value = '';
+            document.getElementById('txReason').value = '';
+            updateUI();
         }
 
-        function exportTransactions() {
-            let csv = 'Username,Date,Type,Amount\n';
-            for (let username in db.transactions) {
-                db.transactions[username].forEach(t => {
-                    csv += `${username},${new Date(t.date).toLocaleDateString()},${t.type},${t.amount}\n`;
-                });
+        function showMatchPlayers() {
+            const split = document.getElementById('splitPercentage').value;
+            if (!split) { alert('Select split percentage'); return; }
+
+            document.getElementById('playerSelectionModal').classList.add('active');
+            matchInProgress = { winners: [], losers: [], split: parseInt(split) };
+            renderPlayerSelection();
+        }
+
+        function renderPlayerSelection() {
+            const available = db.users.filter(u => !u.isAdmin && !matchInProgress.winners.includes(u.username) && !matchInProgress.losers.includes(u.username));
+
+            let winnersHtml = '';
+            matchInProgress.winners.forEach(u => {
+                const user = db.users.find(x => x.username === u);
+                winnersHtml += `<div style="display: inline-block; padding: 6px 10px; background: var(--success); color: white; border-radius: 4px; margin: 4px; font-size: 12px;">${user.firstName} <button onclick="removeFromWinners('${u}')" style="background: none; border: none; color: white; cursor: pointer; margin-left: 4px;">×</button></div>`;
+            });
+            document.getElementById('winnersList').innerHTML = winnersHtml || '<div style="color: var(--text-light);">No winners selected</div>';
+
+            let losersHtml = '';
+            matchInProgress.losers.forEach(u => {
+                const user = db.users.find(x => x.username === u);
+                losersHtml += `<div style="display: inline-block; padding: 6px 10px; background: var(--danger); color: white; border-radius: 4px; margin: 4px; font-size: 12px;">${user.firstName} <button onclick="removeFromLosers('${u}')" style="background: none; border: none; color: white; cursor: pointer; margin-left: 4px;">×</button></div>`;
+            });
+            document.getElementById('losersList').innerHTML = losersHtml || '<div style="color: var(--text-light);">No losers selected</div>';
+
+            let availableHtml = '';
+            available.forEach(u => {
+                availableHtml += `<div style="padding: 8px; background: var(--bg); border-radius: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;"><span>${u.firstName} (${u.username})</span><div><button class="btn btn-small btn-success" onclick="addToWinners('${u.username}')">Winner</button> <button class="btn btn-small btn-danger" onclick="addToLosers('${u.username}')">Loser</button></div></div>`;
+            });
+            document.getElementById('availablePlayersList').innerHTML = availableHtml || '<div>All players selected</div>';
+        }
+
+        function addToWinners(u) { matchInProgress.winners.push(u); renderPlayerSelection(); }
+        function addToLosers(u) { matchInProgress.losers.push(u); renderPlayerSelection(); }
+        function removeFromWinners(u) { matchInProgress.winners = matchInProgress.winners.filter(x => x !== u); renderPlayerSelection(); }
+        function removeFromLosers(u) { matchInProgress.losers = matchInProgress.losers.filter(x => x !== u); renderPlayerSelection(); }
+
+        function finalizeMatch() {
+            if (matchInProgress.winners.length === 0 || matchInProgress.losers.length === 0) {
+                alert('Select at least one winner and one loser');
+                return;
             }
-            downloadCSV(csv, 'kscc_transactions.csv');
-        }
 
-        function exportMatches() {
-            let csv = 'Date,Venue,Prize Pool,Split,Winners,Losers\n';
-            db.matches.forEach(m => {
-                csv += `${new Date(m.date).toLocaleDateString()},${m.venue},${m.amount},"${m.split}:${100-m.split}","${m.winners.join(', ')}","${m.losers.join(', ')}"\n`;
+            const prizePool = parseInt(document.getElementById('prizePoolAdmin').value);
+            const split = matchInProgress.split;
+
+            if (!prizePool || prizePool <= 0) { alert('Enter valid prize pool'); return; }
+
+            const winnersPrize = Math.round(prizePool * split / 100 / matchInProgress.winners.length);
+            const losersPrize = Math.round(prizePool * (100 - split) / 100 / matchInProgress.losers.length);
+
+            const match = {
+                id: Date.now(),
+                date: new Date(document.getElementById('matchDateAdmin').value).toISOString(),
+                venue: document.getElementById('matchVenueAdmin').value,
+                prizePool: prizePool,
+                split: split,
+                winners: matchInProgress.winners,
+                losers: matchInProgress.losers,
+                winnerAmount: winnersPrize,
+                loserAmount: losersPrize
+            };
+
+            matchInProgress.winners.forEach(u => {
+                const newBal = (db.wallets[u] || 0) + winnersPrize;
+                db.wallets[u] = newBal;
+                if (!db.transactions[u]) db.transactions[u] = [];
+                db.transactions[u].push({
+                    date: match.date,
+                    type: 'match_earnings',
+                    amount: winnersPrize,
+                    balance: newBal,
+                    match: match.venue
+                });
             });
-            downloadCSV(csv, 'kscc_matches.csv');
-        }
 
-        function downloadCSV(csv, filename) {
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
+            matchInProgress.losers.forEach(u => {
+                const newBal = (db.wallets[u] || 0) + losersPrize;
+                db.wallets[u] = newBal;
+                if (!db.transactions[u]) db.transactions[u] = [];
+                db.transactions[u].push({
+                    date: match.date,
+                    type: 'match_earnings',
+                    amount: losersPrize,
+                    balance: newBal,
+                    match: match.venue
+                });
+            });
+
+            db.matches.push(match);
+            db.save();
+
+            alert(`✅ Match Completed!\n\nWinners (${split}%): ₹${winnersPrize} each\nLosers (${100-split}%): ₹${losersPrize} each`);
+            closeModal('playerSelectionModal');
+            document.getElementById('matchDateAdmin').value = '';
+            document.getElementById('matchVenueAdmin').value = '';
+            document.getElementById('prizePoolAdmin').value = '';
+            document.getElementById('splitPercentage').value = '';
+            updateUI();
         }
 
         function closeModal(id) {
@@ -873,6 +953,93 @@
         window.onclick = (e) => {
             if (e.target.classList.contains('modal')) e.target.classList.remove('active');
         };
+
+        // Analytics
+        document.getElementById('analyticsPlayer').addEventListener('change', updateAnalytics);
+        document.getElementById('txFilter').addEventListener('change', updateMemberWallet);
+
+        function updateAnalytics() {
+            const selected = document.getElementById('analyticsPlayer').value;
+            const players = selected ? [selected] : db.users.filter(u => !u.isAdmin).map(u => u.username);
+
+            const monthAttendance = {};
+            for (let i = 0; i < 12; i++) monthAttendance[i] = 0;
+
+            players.forEach(username => {
+                const txs = db.transactions[username] || [];
+                txs.filter(t => t.type.includes('earnings')).forEach(t => {
+                    const month = new Date(t.date).getMonth();
+                    monthAttendance[month]++;
+                });
+            });
+
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            if (attendanceChart) attendanceChart.destroy();
+            attendanceChart = new Chart(document.getElementById('attendanceChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Matches Played',
+                        data: Object.values(monthAttendance),
+                        backgroundColor: 'rgba(5, 150, 105, 0.7)',
+                        borderColor: 'rgba(5, 150, 105, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Spending trends
+            const monthSpending = {};
+            for (let i = 0; i < 12; i++) monthSpending[i] = 0;
+
+            players.forEach(username => {
+                const txs = db.transactions[username] || [];
+                txs.forEach(t => {
+                    const month = new Date(t.date).getMonth();
+                    monthSpending[month] += Math.abs(t.amount);
+                });
+            });
+
+            if (spendingChart) spendingChart.destroy();
+            spendingChart = new Chart(document.getElementById('spendingChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Amount',
+                        data: Object.values(monthSpending),
+                        borderColor: 'rgba(124, 58, 237, 1)',
+                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Top earners
+            const earnings = {};
+            db.users.filter(u => !u.isAdmin).forEach(u => {
+                const txs = db.transactions[u.username] || [];
+                const total = txs.filter(t => t.type.includes('earnings')).reduce((s, t) => s + t.amount, 0);
+                earnings[u.firstName] = total;
+            });
+
+            const sorted = Object.entries(earnings).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            let topHtml = '';
+            sorted.forEach(([name, amount], i) => {
+                topHtml += `<div style="padding: 8px; margin-bottom: 8px; background: var(--bg-light); border-radius: 4px; display: flex; justify-content: space-between;"><span>${i+1}. ${name}</span><strong>₹${amount}</strong></div>`;
+            });
+            document.getElementById('topEarners').innerHTML = topHtml || '<div>No data</div>';
+        }
+
+        function showCreateMatch() {
+            document.getElementById('matchDateAdmin').valueAsDate = new Date();
+            document.getElementById('playerSelectionModal').classList.add('active');
+        }
     </script>
 </body>
 </html>
