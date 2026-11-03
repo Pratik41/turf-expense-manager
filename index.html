@@ -503,6 +503,11 @@
                 </div>
 
                 <div class="card">
+                    <h3>Saved Credentials 🔐</h3>
+                    <div id="savedCredsList" style="max-height: 300px; overflow-y: auto;"></div>
+                </div>
+
+                <div class="card">
                     <h3>All Members</h3>
                     <div style="overflow-x: auto;">
                         <table class="table">
@@ -518,6 +523,11 @@
                             <tbody id="adminMembersList"></tbody>
                         </table>
                     </div>
+                </div>
+
+                <div class="card">
+                    <h3>System Actions</h3>
+                    <button class="btn btn-danger" onclick="deleteAllData()" style="width: 100%;">🗑️ Delete All Data & Reset</button>
                 </div>
 
                 <div class="card">
@@ -551,6 +561,31 @@
     </div>
 
     <!-- MODALS -->
+    <div id="credentialsModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('credentialsModal')">&times;</span>
+            <h3>✅ Member Created Successfully!</h3>
+            <div style="background: var(--bg-light); padding: 16px; border-radius: 6px; margin: 16px 0;">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; color: var(--text-light);">Username</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="credUsername" readonly style="flex: 1;">
+                        <button class="btn btn-small btn-primary" onclick="copyToClipboard('credUsername')">Copy</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; color: var(--text-light);">Password</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="credPassword" readonly style="flex: 1;">
+                        <button class="btn btn-small btn-primary" onclick="copyToClipboard('credPassword')">Copy</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveCurrentCredentials()" style="width: 100%; margin-bottom: 8px;">💾 Save Credentials</button>
+                <button class="btn btn-secondary" onclick="closeModal('credentialsModal')" style="width: 100%;">Done</button>
+            </div>
+        </div>
+    </div>
+
     <div id="playerSelectionModal" class="modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal('playerSelectionModal')">&times;</span>
@@ -605,9 +640,55 @@
         let matchInProgress = { winners: [], losers: [] };
         let attendanceChart = null;
         let spendingChart = null;
+        let savedCredentials = JSON.parse(localStorage.getItem('kscc_savedCreds')) || [];
 
         const theme = localStorage.getItem('kscc_theme') || 'light';
         if (theme === 'dark') document.body.classList.add('dark-mode');
+
+        function generateStrongPassword() {
+            const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lower = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*_+-=[]{}';
+            const all = upper + lower + numbers + symbols;
+
+            let p = '';
+            p += upper[Math.floor(Math.random() * upper.length)];
+            p += lower[Math.floor(Math.random() * lower.length)];
+            p += numbers[Math.floor(Math.random() * numbers.length)];
+            p += symbols[Math.floor(Math.random() * symbols.length)];
+
+            for (let i = 0; i < 8; i++) {
+                p += all[Math.floor(Math.random() * all.length)];
+            }
+
+            return p.split('').sort(() => Math.random() - 0.5).join('');
+        }
+
+        function saveCredential(username, password) {
+            savedCredentials = savedCredentials.filter(c => c.username !== username);
+            savedCredentials.push({ username, password });
+            localStorage.setItem('kscc_savedCreds', JSON.stringify(savedCredentials));
+        }
+
+        function deleteAllData() {
+            if (!confirm('⚠️ DELETE ALL DATA?\n\nThis will permanently delete:\n- All members\n- All transactions\n- All matches\n- All wallet data\n\nCannot be undone!')) return;
+
+            localStorage.removeItem('kscc_users');
+            localStorage.removeItem('kscc_wallets');
+            localStorage.removeItem('kscc_transactions');
+            localStorage.removeItem('kscc_matches');
+            localStorage.removeItem('kscc_savedCreds');
+
+            db.users = [];
+            db.wallets = {};
+            db.transactions = {};
+            db.matches = [];
+            db.initAdmin();
+
+            alert('✅ All data deleted! App reset to default state.');
+            logout();
+        }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -777,6 +858,26 @@
                 analyticsSelect.innerHTML += `<option value="${u.username}">${u.firstName}</option>`;
             });
 
+            let credsHtml = '';
+            savedCredentials.forEach(cred => {
+                const user = db.users.find(u => u.username === cred.username);
+                if (user) {
+                    const pwDisplay = '•'.repeat(cred.password.length);
+                    credsHtml += `<div style="padding: 10px; background: var(--bg); border-radius: 4px; margin-bottom: 8px; border: 1px solid var(--border);">
+                        <div style="font-weight: 600; margin-bottom: 4px;">${user.firstName}</div>
+                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 6px;">
+                            Username: <span style="font-family: monospace; color: var(--primary);">${cred.username}</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-light);">
+                            Password: <span style="font-family: monospace; color: var(--text-light);">${pwDisplay}</span>
+                            <button class="btn btn-small btn-primary" onclick="showPassword('${cred.username}')" style="margin-left: 4px;">Show</button>
+                            <button class="btn btn-small btn-danger" onclick="removeCredential('${cred.username}')" style="margin-left: 4px;">Remove</button>
+                        </div>
+                    </div>`;
+                }
+            });
+            document.getElementById('savedCredsList').innerHTML = credsHtml || '<div style="color: var(--text-light);">No saved credentials yet. Create a member and save their credentials.</div>';
+
             let membersList = '';
             db.users.filter(u => !u.isAdmin).forEach(u => {
                 const bal = db.wallets[u.username] || 0;
@@ -785,6 +886,21 @@
             });
             document.getElementById('adminMembersList').innerHTML = membersList;
         }
+
+        function showPassword(username) {
+            const cred = savedCredentials.find(c => c.username === username);
+            if (!cred) return;
+            alert(`🔐 ${username}\nPassword: ${cred.password}`);
+        }
+
+        function removeCredential(username) {
+            if (!confirm('Remove from saved list?')) return;
+            savedCredentials = savedCredentials.filter(c => c.username !== username);
+            localStorage.setItem('kscc_savedCreds', JSON.stringify(savedCredentials));
+            updateUI();
+        }
+
+        let createdMemberCreds = {};
 
         function createMember() {
             const f = document.getElementById('firstName').value.trim();
@@ -795,7 +911,7 @@
 
             const last4 = m.slice(-4);
             const username = f + '_' + last4;
-            const password = f + l + last4;
+            const password = generateStrongPassword();
 
             if (db.users.find(u => u.username === username)) {
                 alert('Member already exists!');
@@ -807,11 +923,29 @@
             db.transactions[username] = [];
             db.save();
 
-            alert(`✅ Member Created!\n\nUsername: ${username}\nPassword: ${password}`);
+            createdMemberCreds = { username, password };
+            document.getElementById('credUsername').value = username;
+            document.getElementById('credPassword').value = password;
+            document.getElementById('credentialsModal').classList.add('active');
+
             document.getElementById('firstName').value = '';
             document.getElementById('lastName').value = '';
             document.getElementById('adminMobile').value = '';
             updateUI();
+        }
+
+        function saveCurrentCredentials() {
+            if (!createdMemberCreds.username) return;
+            saveCredential(createdMemberCreds.username, createdMemberCreds.password);
+            alert('✅ Credentials saved!');
+            closeModal('credentialsModal');
+        }
+
+        function copyToClipboard(id) {
+            const elem = document.getElementById(id);
+            elem.select();
+            document.execCommand('copy');
+            alert('✅ Copied to clipboard!');
         }
 
         function updateWallet() {
