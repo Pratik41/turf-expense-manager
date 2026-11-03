@@ -386,7 +386,12 @@
             </div>
             <div class="form-group">
                 <label><i class="fas fa-lock"></i> Password</label>
-                <input type="password" id="password" placeholder="Enter your password">
+                <div style="display: flex; gap: 8px; align-items: stretch;">
+                    <input type="password" id="password" placeholder="Enter your password" style="flex: 1;">
+                    <button type="button" class="btn" onclick="togglePasswordVisibility()" style="background: var(--border); color: var(--text); padding: 12px 14px; width: auto;">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
             </div>
             <button class="btn btn-primary" onclick="login()">
                 <i class="fas fa-sign-in-alt"></i> Login
@@ -814,12 +819,30 @@
             localStorage.setItem('kscc_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
         function login() {
             const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value;
+            const p = document.getElementById('password').value.trim();
             const user = db.users.find(x => x.username === u && x.password === p);
 
-            if (!user) { showAlert('❌ Invalid credentials', 'danger'); return; }
+            if (!user) {
+                showAlert('❌ Invalid credentials\n\nDefault Admin:\nUsername: admin\nPassword: AdminUser9999', 'danger');
+                return;
+            }
 
             currentUser = user;
             document.getElementById('loginSection').style.display = 'none';
