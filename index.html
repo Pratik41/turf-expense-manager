@@ -780,13 +780,43 @@
     </div>
 
     <script>
+        const APP_VERSION = '2.0';
+
         const db = {
-            users: JSON.parse(localStorage.getItem('kscc_users')) || [],
-            wallets: JSON.parse(localStorage.getItem('kscc_wallets')) || {},
-            transactions: JSON.parse(localStorage.getItem('kscc_transactions')) || {},
-            matches: JSON.parse(localStorage.getItem('kscc_matches')) || [],
+            users: [],
+            wallets: {},
+            transactions: {},
+            matches: [],
+
+            loadFromStorage() {
+                const storedVersion = localStorage.getItem('kscc_app_version');
+
+                if (storedVersion !== APP_VERSION) {
+                    console.log('Version mismatch. Clearing old data...');
+                    this.clearAll();
+                    localStorage.setItem('kscc_app_version', APP_VERSION);
+                }
+
+                this.users = JSON.parse(localStorage.getItem('kscc_users')) || [];
+                this.wallets = JSON.parse(localStorage.getItem('kscc_wallets')) || {};
+                this.transactions = JSON.parse(localStorage.getItem('kscc_transactions')) || {};
+                this.matches = JSON.parse(localStorage.getItem('kscc_matches')) || [];
+            },
+
+            clearAll() {
+                localStorage.removeItem('kscc_users');
+                localStorage.removeItem('kscc_wallets');
+                localStorage.removeItem('kscc_transactions');
+                localStorage.removeItem('kscc_matches');
+                localStorage.removeItem('kscc_savedCreds');
+                this.users = [];
+                this.wallets = {};
+                this.transactions = {};
+                this.matches = [];
+            },
 
             save() {
+                localStorage.setItem('kscc_app_version', APP_VERSION);
                 localStorage.setItem('kscc_users', JSON.stringify(this.users));
                 localStorage.setItem('kscc_wallets', JSON.stringify(this.wallets));
                 localStorage.setItem('kscc_transactions', JSON.stringify(this.transactions));
@@ -794,8 +824,11 @@
             },
 
             initAdmin() {
-                if (this.users.length === 0) {
+                const adminExists = this.users.find(u => u.username === 'admin' && u.password === 'AdminUser9999');
+
+                if (!adminExists) {
                     const admin = { id: 1, firstName: 'Admin', lastName: 'User', mobile: '9999999999', username: 'admin', password: 'AdminUser9999', isAdmin: true };
+                    this.users = this.users.filter(u => u.username !== 'admin');
                     this.users.push(admin);
                     this.wallets['admin'] = 0;
                     this.transactions['admin'] = [];
@@ -804,7 +837,10 @@
             }
         };
 
+        // Load data and ensure admin exists
+        db.loadFromStorage();
         db.initAdmin();
+
         let currentUser = null;
         let matchInProgress = { winners: [], losers: [] };
         let attendanceChart = null;
