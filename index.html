@@ -815,23 +815,50 @@
         }
 
         function login() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value;
-            const user = db.users.find(x => x.username === u && x.password === p);
+            try {
+                console.log('🔵 LOGIN CLICKED');
 
-            if (!user) { showAlert('❌ Invalid credentials', 'danger'); return; }
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
 
-            currentUser = user;
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('appSection').style.display = 'block';
+                console.log('📝 Credentials entered:', { username, password: '***' });
+                console.log('👥 Available users:', db.users.map(u => ({ username: u.username, password: u.password })));
 
-            if (user.isAdmin) {
-                document.getElementById('adminBtn').style.display = 'flex';
-            } else {
-                document.getElementById('adminBtn').style.display = 'none';
+                if (!username || !password) {
+                    alert('❌ Please enter username and password');
+                    return;
+                }
+
+                const user = db.users.find(x => {
+                    console.log(`Checking: ${x.username} === ${username} && ${x.password} === ${password}`);
+                    return x.username === username && x.password === password;
+                });
+
+                if (!user) {
+                    console.log('❌ User not found!');
+                    alert('❌ Invalid credentials\n\nCorrect credentials:\nUsername: admin\nPassword: AdminUser9999');
+                    return;
+                }
+
+                console.log('✅ User found:', user);
+
+                currentUser = user;
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('appSection').style.display = 'block';
+
+                if (user.isAdmin) {
+                    document.getElementById('adminBtn').style.display = 'flex';
+                } else {
+                    document.getElementById('adminBtn').style.display = 'none';
+                }
+
+                updateUI();
+                console.log('✅ LOGIN SUCCESS');
+
+            } catch (err) {
+                console.error('❌ Login error:', err);
+                alert('Error: ' + err.message);
             }
-
-            updateUI();
         }
 
         function logout() {
