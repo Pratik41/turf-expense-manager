@@ -3,45 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSCC - Login</title>
+    <title>KSCC - Cricket Club Management</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
-            background: linear-gradient(135deg, #059669 0%, #7c3aed 100%);
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
+            animation: bgShift 15s ease infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
         }
 
         .login-box {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease;
         }
 
-        .logo { font-size: 48px; text-align: center; margin-bottom: 10px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        h1 { text-align: center; color: #059669; margin-bottom: 5px; font-size: 28px; }
-        p { text-align: center; color: #64748b; margin-bottom: 30px; font-size: 14px; }
+        .logo {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
 
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; }
-        input:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #10b981;
+            background: rgba(15, 23, 42, 0.7);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
 
         .btn {
             width: 100%;
             padding: 12px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
@@ -50,72 +147,102 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .btn-login { background: linear-gradient(135deg, #059669, #047857); color: white; }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .btn-login {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
 
-        .btn-help { background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
 
-        .info { background: #f0f4f8; padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 15px; }
-        .info strong { color: #059669; }
-        code { background: white; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+        .btn-help {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-help:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .info strong {
+            color: #10b981;
+        }
+
+        code {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #22c55e;
+        }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <div class="logo">⚽</div>
-        <h1>KSCC</h1>
-        <p>Cricket Club Management System</p>
+    <div class="login-wrapper">
+        <div class="login-box">
+            <div class="logo">⚽</div>
+            <h1>KSCC</h1>
+            <p class="subtitle">Cricket Club Management System</p>
 
-        <form onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label><i class="fas fa-user"></i> Username</label>
-                <input type="text" id="username" placeholder="admin" required>
-            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" placeholder="admin" required autofocus>
+                </div>
 
-            <div class="form-group">
-                <label><i class="fas fa-lock"></i> Password</label>
-                <input type="password" id="password" placeholder="AdminUser9999" required>
-            </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" placeholder="AdminUser9999" required>
+                </div>
 
-            <button type="submit" class="btn btn-login">
-                <i class="fas fa-sign-in-alt"></i> Login
+                <button type="submit" class="btn btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+
+            <button class="btn btn-help" onclick="showHelp()">
+                <i class="fas fa-question-circle"></i> Need Help?
             </button>
-        </form>
 
-        <button class="btn btn-help" onclick="showHelp()">
-            <i class="fas fa-question-circle"></i> Need Help?
-        </button>
-
-        <div class="info">
-            <strong>Demo Credentials:</strong><br>
-            Username: <code>admin</code><br>
-            Password: <code>AdminUser9999</code>
+            <div class="info">
+                <strong>Demo Credentials:</strong><br>
+                Username: <code>admin</code><br>
+                Password: <code>AdminUser9999</code>
+            </div>
         </div>
     </div>
 
     <script>
-        // Simple database
-        const users = [
-            {
-                id: 1,
-                username: 'admin',
-                password: 'AdminUser9999',
-                firstName: 'Admin',
-                lastName: 'User',
-                isAdmin: true
-            }
-        ];
+        const users = [{
+            id: 1,
+            username: 'admin',
+            password: 'AdminUser9999',
+            firstName: 'Admin',
+            lastName: 'User',
+            isAdmin: true
+        }];
 
         function handleLogin(event) {
             event.preventDefault();
-
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-
-            console.log('🔵 Login attempt:', { username, password: '***' });
 
             const user = users.find(u => u.username === username && u.password === password);
 
@@ -124,21 +251,18 @@
                 return;
             }
 
-            console.log('✅ Login successful!');
-
-            // Save user to localStorage and redirect
             localStorage.setItem('kscc_currentUser', JSON.stringify(user));
+            localStorage.setItem('kscc_users', JSON.stringify([user]));
+            localStorage.setItem('kscc_wallets', JSON.stringify({ admin: 0 }));
+            localStorage.setItem('kscc_transactions', JSON.stringify({ admin: [] }));
+            localStorage.setItem('kscc_matches', JSON.stringify([]));
+
             window.location.href = 'app.html';
         }
 
         function showHelp() {
             alert('📌 Test Credentials:\n\nUsername: admin\nPassword: AdminUser9999');
         }
-
-        // Auto-focus username
-        window.addEventListener('load', function() {
-            document.getElementById('username').focus();
-        });
     </script>
 </body>
 </html>
