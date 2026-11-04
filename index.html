@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSCC Cricket Club - Dashboard v3</title>
+    <title>KSCC Cricket Club - Dashboard v4</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
@@ -31,7 +31,9 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Segoe UI', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
             background: var(--light-bg);
             color: var(--light-text);
             transition: background 0.3s ease, color 0.3s ease;
@@ -282,26 +284,43 @@
         .header {
             background: var(--light-card);
             border-bottom: 1px solid var(--light-border);
-            padding: 20px 30px;
+            padding: 16px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         body[data-theme="dark"] .header {
             background: var(--dark-card);
             border-color: var(--dark-border);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            height: 48px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .header-logo:hover {
+            transform: scale(1.05);
         }
 
         .header-left h2 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin: 0;
         }
 
         .header-right {
@@ -391,7 +410,7 @@
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 30px;
+            padding: 32px;
         }
 
         .tab-content {
@@ -418,9 +437,9 @@
         .card {
             background: var(--light-card);
             border: 1px solid var(--light-border);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
         }
 
@@ -443,26 +462,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-weight: 700;
         }
 
         .card-header h3 {
-            font-size: 16px;
+            font-size: 20px;
+            margin: 0;
+            color: var(--light-text);
+        }
+
+        body[data-theme="dark"] .card-header h3 {
+            color: var(--dark-text);
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 36px;
             font-weight: 700;
             color: var(--primary);
-            margin: 10px 0;
+            margin: 12px 0;
+            line-height: 1.2;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 13px;
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         body[data-theme="dark"] .stat-label {
@@ -496,9 +523,9 @@
         .form {
             background: var(--light-card);
             border: 1px solid var(--light-border);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
         }
 
         body[data-theme="dark"] .form {
@@ -537,16 +564,18 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         table th {
             background: var(--light-bg);
-            padding: 12px;
+            padding: 14px;
             text-align: left;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--light-text);
             border-bottom: 2px solid var(--light-border);
+            font-size: 14px;
+            letter-spacing: 0.5px;
         }
 
         body[data-theme="dark"] table th {
@@ -556,7 +585,7 @@
         }
 
         table td {
-            padding: 12px;
+            padding: 14px;
             border-bottom: 1px solid var(--light-border);
         }
 
@@ -780,9 +809,10 @@
         .stat-card {
             background: var(--light-card);
             border: 1px solid var(--light-border);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 14px;
+            padding: 20px;
             text-align: center;
+            transition: all 0.3s ease;
         }
 
         body[data-theme="dark"] .stat-card {
@@ -790,12 +820,18 @@
             border-color: var(--dark-border);
         }
 
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
         .stat-card h4 {
-            font-size: 12px;
+            font-size: 13px;
             color: #64748b;
             text-transform: uppercase;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         body[data-theme="dark"] .stat-card h4 {
@@ -803,9 +839,10 @@
         }
 
         .stat-card .value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--primary);
+            line-height: 1.2;
         }
 
         /* Animations */
@@ -1002,12 +1039,17 @@
     <div class="dashboard" id="dashboard">
         <div class="header">
             <div class="header-left">
+                <svg class="header-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" style="width: 50px; height: auto;">
+                    <circle cx="40" cy="40" r="35" fill="none" stroke="#6366f1" stroke-width="2"/>
+                    <text x="100" y="50" font-size="24" font-weight="700" fill="#6366f1" font-family="Arial, sans-serif">KSCC</text>
+                </svg>
                 <h2>KSCC Cricket Club</h2>
             </div>
             <div class="header-right">
                 <div class="user-info">
                     <p>Welcome</p>
                     <span id="currentUser">User</span>
+                    <p id="userWalletDisplay" style="font-size: 12px; margin-top: 4px; display: none;"></p>
                 </div>
                 <button class="toggle-mode" id="themeToggle2">🌙</button>
                 <button class="btn-logout" onclick="handleLogout()">Logout</button>
@@ -1232,6 +1274,11 @@
                         </select>
                     </div>
                     <div class="analytics-cards" id="playerAnalyticsCards"></div>
+                    <div id="playerChartContainer" style="display: none; margin-top: 30px;">
+                        <div class="chart-container" style="height: 320px;">
+                            <canvas id="playerMatchChart"></canvas>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card">
@@ -1362,6 +1409,12 @@
                         <div style="margin-bottom: 20px;">
                             <p style="font-size: 14px; color: #64748b; margin-bottom: 8px;">Current Balance</p>
                             <p style="font-weight: 600; font-size: 16px; color: var(--success);" id="profileBalance">₹0</p>
+                        </div>
+                        <div style="margin-bottom: 20px; padding: 16px; background: var(--light-bg); border-radius: 10px;">
+                            <p style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 600;">Security Question</p>
+                            <p style="font-weight: 600; font-size: 15px; margin-bottom: 12px;" id="profileSecurityQuestion">-</p>
+                            <p style="font-size: 14px; color: #64748b; margin-bottom: 8px; font-weight: 600;">Security Answer</p>
+                            <p style="font-weight: 600; font-size: 15px;" id="profileSecurityAnswer">-</p>
                         </div>
                     </div>
                 </div>
@@ -1534,6 +1587,17 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('currentUser').textContent = app.currentUser.firstName + ' ' + app.currentUser.lastName;
+
+            // Display user's wallet in header
+            const userWalletDisplay = document.getElementById('userWalletDisplay');
+            if (app.currentUser.role === 'player') {
+                const balance = app.currentUser.balance || 0;
+                let walletColor = 'var(--success)';
+                if (balance < 150) walletColor = 'var(--danger)';
+                else if (balance < 500) walletColor = 'var(--warning)';
+                userWalletDisplay.innerHTML = `Your Wallet: <span style="color: ${walletColor}; font-weight: 700;">₹${balance.toLocaleString('en-IN')}</span>`;
+                userWalletDisplay.style.display = 'block';
+            }
 
             const isAdmin = app.currentUser.role === 'admin';
             document.getElementById('matchExpenseTabBtn').style.display = isAdmin ? 'block' : 'none';
@@ -1731,6 +1795,17 @@
             updateDashboard();
             updateWalletDropdown();
             filterTransactions('all');
+
+            // Update wallet display in header if current user
+            if (app.currentUser.username === playerUsername) {
+                const userWalletDisplay = document.getElementById('userWalletDisplay');
+                const balance = app.currentUser.balance || 0;
+                let walletColor = 'var(--success)';
+                if (balance < 150) walletColor = 'var(--danger)';
+                else if (balance < 500) walletColor = 'var(--warning)';
+                userWalletDisplay.innerHTML = `Your Wallet: <span style="color: ${walletColor}; font-weight: 700;">₹${balance.toLocaleString('en-IN')}</span>`;
+            }
+
             showMessage(`Transaction completed! ${player.firstName}'s new balance: ₹${player.balance}`, 'success');
         }
 
@@ -1906,6 +1981,16 @@
             showMessage('Match expense saved successfully!', 'success');
             updateDashboard();
             initMatchExpense();
+
+            // Update wallet display in header if current user
+            if (app.currentUser && app.currentUser.role === 'player') {
+                const userWalletDisplay = document.getElementById('userWalletDisplay');
+                const balance = app.currentUser.balance || 0;
+                let walletColor = 'var(--success)';
+                if (balance < 150) walletColor = 'var(--danger)';
+                else if (balance < 500) walletColor = 'var(--warning)';
+                userWalletDisplay.innerHTML = `Your Wallet: <span style="color: ${walletColor}; font-weight: 700;">₹${balance.toLocaleString('en-IN')}</span>`;
+            }
         }
 
         // Analytics
@@ -1924,6 +2009,7 @@
 
             if (!player) {
                 document.getElementById('playerAnalyticsCards').innerHTML = '';
+                document.getElementById('playerChartContainer').style.display = 'none';
                 return;
             }
 
@@ -1971,6 +2057,50 @@
             `;
 
             document.getElementById('playerAnalyticsCards').innerHTML = html;
+
+            // Show and render chart
+            document.getElementById('playerChartContainer').style.display = 'block';
+            renderPlayerMatchChart(player.firstName, thisMonth, lastMonth, threeMonths, sixMonths);
+        }
+
+        function renderPlayerMatchChart(playerName, thisMonth, lastMonth, threeMonths, sixMonths) {
+            const ctx = document.getElementById('playerMatchChart').getContext('2d');
+            const labels = ['This Month', 'Last Month', 'Last 3 Months', 'Last 6 Months'];
+            const data = [thisMonth, lastMonth, threeMonths, sixMonths];
+
+            if (window.playerMatchChartInstance) {
+                window.playerMatchChartInstance.destroy();
+            }
+
+            window.playerMatchChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Matches Played - ' + playerName,
+                        data: data,
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderColor: '#6366f1',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        }
+                    }
+                }
+            });
         }
 
         function renderCharts() {
@@ -2137,6 +2267,10 @@
             document.getElementById('profileMobile').textContent = user.mobile;
             document.getElementById('profileRole').textContent = user.role.toUpperCase();
             document.getElementById('profileBalance').textContent = `₹${(user.balance || 0).toLocaleString('en-IN')}`;
+
+            // Display security question and answer
+            document.getElementById('profileSecurityQuestion').textContent = 'Security Answer: ' + (user.securityAnswer || 'Not set');
+            document.getElementById('profileSecurityAnswer').textContent = 'Question: ' + (user.securityAnswer ? 'Answer is secured' : 'Not configured');
         }
 
         function updateSecurityAnswer() {
