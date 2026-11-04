@@ -193,7 +193,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            color: #f59e0b;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
@@ -202,6 +202,7 @@
             background: var(--dark-card);
             border-color: var(--dark-border);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            color: #3b82f6;
         }
 
         .toggle-mode:hover {
@@ -1054,7 +1055,22 @@
                     <span id="currentUser">User</span>
                     <p id="userWalletDisplay" style="font-size: 12px; margin-top: 4px; display: none;"></p>
                 </div>
-                <button class="toggle-mode" id="themeToggle2">🌙</button>
+                <button class="toggle-mode" id="themeToggle2" title="Toggle Dark/Light Mode">
+                    <svg class="theme-icon" viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;">
+                        <!-- Sun icon -->
+                        <circle cx="12" cy="12" r="5" class="sun-circle" fill="currentColor"/>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-line" stroke="currentColor" stroke-width="2"/>
+                        <!-- Moon icon (hidden by default) -->
+                        <path class="moon-icon" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" style="display: none;"/>
+                    </svg>
+                </button>
                 <button class="btn-logout" onclick="handleLogout()">Logout</button>
             </div>
         </div>
@@ -1468,9 +1484,13 @@
 
         function updateThemeIcon() {
             const isDark = document.body.getAttribute('data-theme') === 'dark';
-            document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
             const toggle2 = document.getElementById('themeToggle2');
-            if (toggle2) toggle2.textContent = isDark ? '☀️' : '🌙';
+            if (toggle2) {
+                const sunElements = toggle2.querySelectorAll('.sun-circle, .sun-line');
+                const moonElement = toggle2.querySelector('.moon-icon');
+                sunElements.forEach(el => el.style.display = isDark ? 'none' : 'block');
+                if (moonElement) moonElement.style.display = isDark ? 'block' : 'none';
+            }
         }
 
         function initTheme() {
