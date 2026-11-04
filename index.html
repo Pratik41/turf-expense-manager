@@ -51,6 +51,10 @@
             padding: 20px;
         }
 
+        .login-screen.hidden {
+            display: none;
+        }
+
         .login-card {
             background: var(--light-card);
             backdrop-filter: blur(10px);
@@ -109,7 +113,7 @@
             color: var(--dark-text);
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px 16px;
             border: 1.5px solid var(--light-border);
@@ -120,13 +124,15 @@
             transition: all 0.3s ease;
         }
 
-        body[data-theme="dark"] .form-group input {
+        body[data-theme="dark"] .form-group input,
+        body[data-theme="dark"] .form-group select {
             background: #0f172a;
             border-color: var(--dark-border);
             color: var(--dark-text);
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -156,24 +162,22 @@
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
-        .btn-secondary {
-            background: transparent;
-            border: 1.5px solid var(--light-border);
-            color: var(--light-text);
+        .link-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 0;
             margin-top: 10px;
+            text-decoration: underline;
+            width: 100%;
+            text-align: center;
         }
 
-        body[data-theme="dark"] .btn-secondary {
-            border-color: var(--dark-border);
-            color: var(--dark-text);
-        }
-
-        .btn-secondary:hover {
-            background: var(--light-bg);
-        }
-
-        body[data-theme="dark"] .btn-secondary:hover {
-            background: #1e293b;
+        .link-btn:hover {
+            color: var(--primary-dark);
         }
 
         .toggle-mode {
@@ -202,6 +206,64 @@
 
         .toggle-mode:hover {
             transform: scale(1.05);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--light-card);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        body[data-theme="dark"] .modal-content {
+            background: var(--dark-card);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
         }
 
         /* Dashboard */
@@ -405,7 +467,6 @@
             color: #94a3b8;
         }
 
-        /* Alert Badge */
         .alert {
             display: inline-block;
             padding: 4px 12px;
@@ -422,11 +483,6 @@
         .alert-success {
             background: rgba(16, 185, 129, 0.1);
             color: var(--success);
-        }
-
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
         }
 
         .alert-info {
@@ -514,7 +570,251 @@
             background: #1e293b;
         }
 
-        /* Match Split Visualization */
+        /* Drag and Drop Styles */
+        .drag-drop-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .drag-zone {
+            background: var(--light-bg);
+            border: 2px dashed var(--light-border);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 400px;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .drag-zone {
+            background: #1e293b;
+            border-color: var(--dark-border);
+        }
+
+        .drag-zone.drag-over {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .drag-zone-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .draggable-player {
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: move;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        body[data-theme="dark"] .draggable-player {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .draggable-player:hover {
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .draggable-player.dragging {
+            opacity: 0.5;
+        }
+
+        .split-ratio-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ratio-btn {
+            padding: 8px 16px;
+            border: 1.5px solid var(--light-border);
+            background: var(--light-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .ratio-btn {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .ratio-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .ratio-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .ratio-btn.active:hover {
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        body[data-theme="dark"] .player-item {
+            background: #1e293b;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .player-balance {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .player-balance.low {
+            color: var(--danger);
+        }
+
+        .player-balance.medium {
+            color: var(--warning);
+        }
+
+        .player-balance.high {
+            color: var(--success);
+        }
+
+        code {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--light-border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: var(--light-bg);
+            color: var(--light-text);
+        }
+
+        body[data-theme="dark"] .search-box input {
+            background: #0f172a;
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            border: 1px solid var(--light-border);
+            background: var(--light-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        body[data-theme="dark"] .btn-small {
+            border-color: var(--dark-border);
+            background: #1e293b;
+        }
+
+        .btn-small.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 15px;
+        }
+
         .match-split {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -563,27 +863,6 @@
             justify-content: space-between;
         }
 
-        /* Animations */
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -606,6 +885,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .drag-drop-container {
+                grid-template-columns: 1fr;
+            }
+
             .nav-tabs {
                 padding: 0 15px;
             }
@@ -620,6 +903,14 @@
 
             table th, table td {
                 padding: 8px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
             }
         }
 
@@ -650,94 +941,11 @@
             background: #94a3b8;
         }
 
-        /* Chart Container */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-top: 15px;
-        }
-
         .btn-group {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
             flex-wrap: wrap;
-        }
-
-        .btn-small {
-            padding: 8px 12px;
-            border: 1px solid var(--light-border);
-            background: var(--light-bg);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        body[data-theme="dark"] .btn-small {
-            border-color: var(--dark-border);
-            background: #1e293b;
-        }
-
-        .btn-small.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .btn-small:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-small.active:hover {
-            color: white;
-        }
-
-        /* Player List */
-        .player-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: var(--light-bg);
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        body[data-theme="dark"] .player-item {
-            background: #1e293b;
-        }
-
-        .player-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .player-balance {
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .player-balance.low {
-            color: var(--danger);
-        }
-
-        .player-balance.medium {
-            color: var(--warning);
-        }
-
-        .player-balance.high {
-            color: var(--success);
-        }
-
-        code {
-            background: rgba(99, 102, 241, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            color: var(--primary);
         }
     </style>
 </head>
@@ -752,18 +960,57 @@
                 <p>Club Management Dashboard</p>
             </div>
 
-            <form id="loginForm" onsubmit="handleLogin(event)">
+            <div id="loginForm">
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter username" required>
+                    <input type="text" id="username" placeholder="Enter username">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required>
+                    <input type="password" id="password" placeholder="Enter password">
                 </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-                <button type="button" class="btn btn-secondary" onclick="showDemoLogin()">Demo Login</button>
-            </form>
+                <button type="button" class="btn btn-primary" onclick="handleLogin()">Login</button>
+                <button type="button" class="link-btn" onclick="showForgotPassword()">Forgot Password?</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgotPasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reset Password</h2>
+                <button class="modal-close" onclick="closeForgotPassword()">×</button>
+            </div>
+            <div id="forgotPasswordForm">
+                <div class="form-group">
+                    <label for="resetUsername">Username</label>
+                    <input type="text" id="resetUsername" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="resetMobile">Mobile Number</label>
+                    <input type="tel" id="resetMobile" placeholder="10-digit mobile number" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label for="securityAnswer">Security Question Answer</label>
+                    <input type="text" id="securityAnswer" placeholder="Enter answer">
+                </div>
+                <button class="btn btn-primary" onclick="verifySecurityQuestion()">Verify Answer</button>
+            </div>
+            <div id="resetPasswordForm" style="display: none;">
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; color: var(--success);">
+                    Security verification successful!
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm password">
+                </div>
+                <button class="btn btn-primary" onclick="resetPassword()">Reset Password</button>
+            </div>
         </div>
     </div>
 
@@ -776,7 +1023,7 @@
             <div class="header-right">
                 <div class="user-info">
                     <p>Welcome</p>
-                    <span id="currentUser">Admin</span>
+                    <span id="currentUser">User</span>
                 </div>
                 <button class="toggle-mode" id="themeToggle2">🌙</button>
                 <button class="btn-logout" onclick="handleLogout()">Logout</button>
@@ -785,6 +1032,7 @@
 
         <div class="nav-tabs" id="navTabs">
             <button class="nav-tab active" onclick="switchTab('dashboard-tab')">Dashboard</button>
+            <button class="nav-tab" id="matchExpenseTabBtn" onclick="switchTab('match-expense-tab')" style="display: none;">Match Expense</button>
             <button class="nav-tab" id="walletTabBtn" onclick="switchTab('wallet-tab')" style="display: none;">Wallet</button>
             <button class="nav-tab" id="matchesTabBtn" onclick="switchTab('matches-tab')" style="display: none;">Matches</button>
             <button class="nav-tab" id="analyticsTabBtn" onclick="switchTab('analytics-tab')" style="display: none;">Analytics</button>
@@ -830,8 +1078,68 @@
                     <div class="card-header">
                         <h3>All Players Balances</h3>
                     </div>
+                    <div class="search-box">
+                        <input type="text" id="playerSearch" placeholder="Search players..." onkeyup="filterPlayersDisplay()">
+                    </div>
                     <div id="allPlayersList"></div>
                 </div>
+            </div>
+
+            <!-- Match Expense Tab -->
+            <div class="tab-content" id="match-expense-tab">
+                <div class="form">
+                    <h3 style="margin-bottom: 20px;">Match Expense Setup - Drag & Drop Players</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="matchExpenseAmount">Match Pool Amount (₹)</label>
+                            <input type="number" id="matchExpenseAmount" placeholder="2000" min="100" step="50" value="2000">
+                        </div>
+                        <div class="form-group">
+                            <label for="matchDate">Match Date</label>
+                            <input type="date" id="matchDate">
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 30px; margin-bottom: 15px; font-weight: 700;">Split Ratio</h4>
+                    <div class="split-ratio-selector">
+                        <button class="ratio-btn active" onclick="setSplitRatio(60, 40)">60:40</button>
+                        <button class="ratio-btn" onclick="setSplitRatio(70, 30)">70:30</button>
+                        <button class="ratio-btn" onclick="setSplitRatio(50, 50)">50:50</button>
+                        <button class="ratio-btn" onclick="toggleCustomRatio()">Custom</button>
+                    </div>
+
+                    <div id="customRatioForm" style="display: none; margin-bottom: 15px;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customRatio1">First Group %</label>
+                                <input type="number" id="customRatio1" min="0" max="100" value="60">
+                            </div>
+                            <div class="form-group">
+                                <label for="customRatio2">Second Group %</label>
+                                <input type="number" id="customRatio2" min="0" max="100" value="40">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="drag-drop-container">
+                    <div class="drag-zone" ondrop="handleDrop(event, 'available')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <div class="drag-zone-title">Available Players</div>
+                        <div id="availablePlayersZone"></div>
+                    </div>
+                    <div class="drag-zone" ondrop="handleDrop(event, 'group1')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <div class="drag-zone-title" id="group1Title">Group 1 (60%)</div>
+                        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px;">₹<span id="group1Amount">0</span> per player</div>
+                        <div id="group1PlayersZone"></div>
+                    </div>
+                    <div class="drag-zone" ondrop="handleDrop(event, 'group2')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <div class="drag-zone-title" id="group2Title">Group 2 (40%)</div>
+                        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px;">₹<span id="group2Amount">0</span> per player</div>
+                        <div id="group2PlayersZone"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="margin-top: 20px;" onclick="submitMatchExpense()">Save Match Expense</button>
             </div>
 
             <!-- Wallet Tab -->
@@ -933,7 +1241,7 @@
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <h3>Player Balances Comparison</h3>
+                            <h3>Player Balances Comparison (Top 10)</h3>
                         </div>
                         <div class="chart-container">
                             <canvas id="spendingChart"></canvas>
@@ -945,6 +1253,9 @@
                     <div class="card-header">
                         <h3>Top Earners Leaderboard</h3>
                     </div>
+                    <div class="search-box">
+                        <input type="text" id="leaderboardSearch" placeholder="Search player..." onkeyup="filterLeaderboard()">
+                    </div>
                     <div id="leaderboardList"></div>
                 </div>
             </div>
@@ -954,6 +1265,9 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>Player Directory</h3>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="playersSearch" placeholder="Search players..." onkeyup="filterPlayersTable()">
                     </div>
                     <div class="table-responsive">
                         <table>
@@ -980,11 +1294,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" placeholder="Pratik">
+                            <input type="text" id="firstName" placeholder="Rohit">
                         </div>
                         <div class="form-group">
                             <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" placeholder="Sonkusale">
+                            <input type="text" id="lastName" placeholder="Sharma">
                         </div>
                     </div>
                     <div class="form-row">
@@ -998,6 +1312,12 @@
                                 <option value="player">Player</option>
                                 <option value="admin">Admin</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="securityQuestionAdmin">Security Question Answer</label>
+                            <input type="text" id="securityQuestionAdmin" placeholder="e.g., Your favorite cricket player">
                         </div>
                     </div>
                     <button class="btn btn-primary" onclick="createUser()">Create User</button>
@@ -1014,7 +1334,31 @@
 
                 <div class="card">
                     <div class="card-header">
+                        <h3>Reset User Passwords</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Mobile</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="passwordResetTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
                         <h3>All Users</h3>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="usersSearch" placeholder="Search users..." onkeyup="filterUsersTable()">
                     </div>
                     <div class="table-responsive">
                         <table>
@@ -1040,21 +1384,21 @@
         // Application State
         const app = {
             currentUser: null,
-            users: [
-                {
-                    username: 'admin_0000',
-                    password: 'admin0000',
-                    firstName: 'Admin',
-                    lastName: 'User',
-                    mobile: '0000000000',
-                    role: 'admin',
-                    balance: 0
-                }
-            ],
+            users: [],
             transactions: [],
             matches: [],
-            currentFilter: 'all'
+            currentFilter: 'all',
+            draggedPlayer: null,
+            matchExpenseState: {
+                group1: [],
+                group2: [],
+                ratio1: 60,
+                ratio2: 40
+            }
         };
+
+        // Set today's date as default
+        document.getElementById('matchDate').valueAsDate = new Date();
 
         // Theme Toggle
         function toggleTheme() {
@@ -1079,31 +1423,119 @@
         }
 
         // Login Handler
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                showMessage('Please enter both username and password', 'error');
+                return;
+            }
 
             const user = app.users.find(u => u.username === username && u.password === password);
             if (user) {
                 app.currentUser = user;
                 loadDashboard();
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
             } else {
-                alert('Invalid credentials');
+                showMessage('Invalid credentials', 'error');
             }
         }
 
-        function showDemoLogin() {
-            document.getElementById('username').value = 'admin_0000';
-            document.getElementById('password').value = 'admin0000';
+        // Forgot Password
+        function showForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.add('active');
+            document.getElementById('forgotPasswordForm').style.display = 'block';
+            document.getElementById('resetPasswordForm').style.display = 'none';
+            document.getElementById('resetUsername').value = '';
+            document.getElementById('resetMobile').value = '';
+            document.getElementById('securityAnswer').value = '';
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.remove('active');
+        }
+
+        function verifySecurityQuestion() {
+            const username = document.getElementById('resetUsername').value.trim();
+            const mobile = document.getElementById('resetMobile').value.trim();
+            const answer = document.getElementById('securityAnswer').value.trim().toLowerCase();
+
+            if (!username || !mobile) {
+                showMessage('Please enter username and mobile number', 'error');
+                return;
+            }
+
+            const user = app.users.find(u => u.username === username && u.mobile === mobile);
+            if (!user) {
+                showMessage('User not found with these credentials', 'error');
+                return;
+            }
+
+            if (!user.securityAnswer || user.securityAnswer.toLowerCase() !== answer) {
+                user.failedAttempts = (user.failedAttempts || 0) + 1;
+                if (user.failedAttempts >= 3) {
+                    showMessage('3 incorrect attempts. Please contact admin to reset your password.', 'error');
+                    user.failedAttempts = 0;
+                    return;
+                }
+                showMessage(`Incorrect answer. Attempts remaining: ${3 - user.failedAttempts}`, 'error');
+                return;
+            }
+
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+            document.getElementById('resetPasswordForm').style.display = 'block';
+            user.failedAttempts = 0;
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            const username = document.getElementById('resetUsername').value.trim();
+
+            if (!newPassword || !confirmPassword) {
+                showMessage('Please enter and confirm password', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            const user = app.users.find(u => u.username === username);
+            if (user) {
+                user.password = newPassword;
+                showMessage('Password reset successfully! You can now login.', 'success');
+                setTimeout(() => {
+                    closeForgotPassword();
+                    document.getElementById('username').value = username;
+                    document.getElementById('password').value = '';
+                }, 2000);
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 4000);
         }
 
         function loadDashboard() {
-            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('currentUser').textContent = app.currentUser.firstName + ' ' + app.currentUser.lastName;
 
             const isAdmin = app.currentUser.role === 'admin';
+            document.getElementById('matchExpenseTabBtn').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('walletTabBtn').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('matchesTabBtn').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('analyticsTabBtn').style.display = isAdmin ? 'block' : 'none';
@@ -1112,12 +1544,14 @@
             updateDashboard();
             updateWalletDropdown();
             updateUsersTable();
+            updatePasswordResetTable();
+            initMatchExpense();
         }
 
         function handleLogout() {
             app.currentUser = null;
             document.getElementById('dashboard').classList.remove('active');
-            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginScreen').classList.remove('hidden');
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         }
@@ -1160,6 +1594,27 @@
             }
             document.getElementById('lowBalanceList').innerHTML = lowBalanceHTML;
 
+            renderPlayersDisplay();
+
+            let playersTableHTML = '';
+            players.forEach(player => {
+                const balance = player.balance || 0;
+                const status = balance < 150 ? '<span class="alert alert-danger">ALERT</span>' : '<span class="alert alert-success">OK</span>';
+                playersTableHTML += `
+                    <tr>
+                        <td>${player.firstName} ${player.lastName}</td>
+                        <td><code>${player.username}</code></td>
+                        <td>${player.mobile}</td>
+                        <td>₹${balance.toLocaleString('en-IN')}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('playersTable').innerHTML = playersTableHTML;
+        }
+
+        function renderPlayersDisplay() {
+            const players = app.users.filter(u => u.role === 'player');
             let playersHTML = '';
             players.forEach(player => {
                 const balance = player.balance || 0;
@@ -1175,6 +1630,38 @@
                 `;
             });
             document.getElementById('allPlayersList').innerHTML = playersHTML || '<p style="text-align: center; color: #64748b; padding: 20px;">No players yet</p>';
+        }
+
+        function filterPlayersDisplay() {
+            const searchTerm = document.getElementById('playerSearch').value.toLowerCase();
+            const players = app.users.filter(u => u.role === 'player' &&
+                (u.firstName.toLowerCase().includes(searchTerm) ||
+                 u.lastName.toLowerCase().includes(searchTerm) ||
+                 u.username.toLowerCase().includes(searchTerm)));
+
+            let playersHTML = '';
+            players.forEach(player => {
+                const balance = player.balance || 0;
+                let balanceClass = 'high';
+                if (balance < 150) balanceClass = 'low';
+                else if (balance < 500) balanceClass = 'medium';
+
+                playersHTML += `
+                    <div class="player-item">
+                        <div class="player-name">${player.firstName} ${player.lastName}</div>
+                        <div class="player-balance ${balanceClass}">₹${balance.toLocaleString('en-IN')}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('allPlayersList').innerHTML = playersHTML || '<p style="text-align: center; color: #64748b; padding: 20px;">No players found</p>';
+        }
+
+        function filterPlayersTable() {
+            const searchTerm = document.getElementById('playersSearch').value.toLowerCase();
+            const players = app.users.filter(u => u.role === 'player' &&
+                (u.firstName.toLowerCase().includes(searchTerm) ||
+                 u.lastName.toLowerCase().includes(searchTerm) ||
+                 u.username.toLowerCase().includes(searchTerm)));
 
             let playersTableHTML = '';
             players.forEach(player => {
@@ -1209,7 +1696,7 @@
             const amount = parseInt(document.getElementById('amount').value);
 
             if (!playerUsername || !amount) {
-                alert('Please fill all fields');
+                showMessage('Please fill all fields', 'error');
                 return;
             }
 
@@ -1220,7 +1707,7 @@
                 player.balance = oldBalance + amount;
             } else {
                 if (oldBalance < amount) {
-                    alert('Insufficient balance');
+                    showMessage('Insufficient balance', 'error');
                     return;
                 }
                 player.balance = oldBalance - amount;
@@ -1239,7 +1726,7 @@
             updateDashboard();
             updateWalletDropdown();
             filterTransactions('all');
-            alert(`Transaction completed! ${player.firstName}'s new balance: ₹${player.balance}`);
+            showMessage(`Transaction completed! ${player.firstName}'s new balance: ₹${player.balance}`, 'success');
         }
 
         function filterTransactions(period) {
@@ -1287,6 +1774,133 @@
             event.target.classList.add('active');
         }
 
+        // Match Expense - Drag & Drop
+        function initMatchExpense() {
+            const players = app.users.filter(u => u.role === 'player');
+            let html = '';
+            players.forEach(player => {
+                html += `<div class="draggable-player" draggable="true" ondragstart="handleDragStart(event, '${player.username}')">${player.firstName} ${player.lastName}</div>`;
+            });
+            document.getElementById('availablePlayersZone').innerHTML = html;
+            app.matchExpenseState.group1 = [];
+            app.matchExpenseState.group2 = [];
+            renderMatchExpenseZones();
+        }
+
+        function handleDragStart(e, username) {
+            app.draggedPlayer = username;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e, zone) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            if (!app.draggedPlayer) return;
+
+            if (zone === 'group1') {
+                if (!app.matchExpenseState.group1.includes(app.draggedPlayer)) {
+                    app.matchExpenseState.group1 = app.matchExpenseState.group1.filter(p => p !== app.draggedPlayer);
+                    app.matchExpenseState.group2 = app.matchExpenseState.group2.filter(p => p !== app.draggedPlayer);
+                    app.matchExpenseState.group1.push(app.draggedPlayer);
+                }
+            } else if (zone === 'group2') {
+                if (!app.matchExpenseState.group2.includes(app.draggedPlayer)) {
+                    app.matchExpenseState.group1 = app.matchExpenseState.group1.filter(p => p !== app.draggedPlayer);
+                    app.matchExpenseState.group2 = app.matchExpenseState.group2.filter(p => p !== app.draggedPlayer);
+                    app.matchExpenseState.group2.push(app.draggedPlayer);
+                }
+            } else if (zone === 'available') {
+                app.matchExpenseState.group1 = app.matchExpenseState.group1.filter(p => p !== app.draggedPlayer);
+                app.matchExpenseState.group2 = app.matchExpenseState.group2.filter(p => p !== app.draggedPlayer);
+            }
+
+            renderMatchExpenseZones();
+            app.draggedPlayer = null;
+        }
+
+        function renderMatchExpenseZones() {
+            const amount = parseInt(document.getElementById('matchExpenseAmount').value) || 0;
+            const group1Amount = Math.floor((amount * app.matchExpenseState.ratio1) / 100 / app.matchExpenseState.group1.length) || 0;
+            const group2Amount = Math.floor((amount * app.matchExpenseState.ratio2) / 100 / app.matchExpenseState.group2.length) || 0;
+
+            document.getElementById('group1Amount').textContent = group1Amount;
+            document.getElementById('group2Amount').textContent = group2Amount;
+
+            const allPlayers = app.users.filter(u => u.role === 'player');
+            const assignedPlayers = [...app.matchExpenseState.group1, ...app.matchExpenseState.group2];
+            const available = allPlayers.filter(p => !assignedPlayers.includes(p.username));
+
+            let availableHTML = '';
+            available.forEach(player => {
+                availableHTML += `<div class="draggable-player" draggable="true" ondragstart="handleDragStart(event, '${player.username}')">${player.firstName} ${player.lastName}</div>`;
+            });
+            document.getElementById('availablePlayersZone').innerHTML = availableHTML;
+
+            let group1HTML = '';
+            app.matchExpenseState.group1.forEach(username => {
+                const player = app.users.find(u => u.username === username);
+                group1HTML += `<div class="draggable-player" draggable="true" ondragstart="handleDragStart(event, '${username}')">${player.firstName} ${player.lastName} • ₹${group1Amount}</div>`;
+            });
+            document.getElementById('group1PlayersZone').innerHTML = group1HTML;
+
+            let group2HTML = '';
+            app.matchExpenseState.group2.forEach(username => {
+                const player = app.users.find(u => u.username === username);
+                group2HTML += `<div class="draggable-player" draggable="true" ondragstart="handleDragStart(event, '${username}')">${player.firstName} ${player.lastName} • ₹${group2Amount}</div>`;
+            });
+            document.getElementById('group2PlayersZone').innerHTML = group2HTML;
+        }
+
+        function setSplitRatio(ratio1, ratio2) {
+            app.matchExpenseState.ratio1 = ratio1;
+            app.matchExpenseState.ratio2 = ratio2;
+            document.getElementById('group1Title').textContent = `Group 1 (${ratio1}%)`;
+            document.getElementById('group2Title').textContent = `Group 2 (${ratio2}%)`;
+            document.querySelectorAll('.ratio-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('customRatioForm').style.display = 'none';
+            renderMatchExpenseZones();
+        }
+
+        function toggleCustomRatio() {
+            document.getElementById('customRatioForm').style.display = document.getElementById('customRatioForm').style.display === 'none' ? 'block' : 'none';
+        }
+
+        function submitMatchExpense() {
+            if (app.matchExpenseState.group1.length === 0 || app.matchExpenseState.group2.length === 0) {
+                showMessage('Please assign players to both groups', 'error');
+                return;
+            }
+
+            const amount = parseInt(document.getElementById('matchExpenseAmount').value);
+            const group1Amount = Math.floor((amount * app.matchExpenseState.ratio1) / 100 / app.matchExpenseState.group1.length);
+            const group2Amount = Math.floor((amount * app.matchExpenseState.ratio2) / 100 / app.matchExpenseState.group2.length);
+
+            app.matchExpenseState.group1.forEach(username => {
+                const player = app.users.find(u => u.username === username);
+                player.balance = (player.balance || 0) + group1Amount;
+            });
+
+            app.matchExpenseState.group2.forEach(username => {
+                const player = app.users.find(u => u.username === username);
+                player.balance = (player.balance || 0) + group2Amount;
+            });
+
+            showMessage('Match expense saved successfully!', 'success');
+            updateDashboard();
+            initMatchExpense();
+        }
+
         // Match Management
         function calculateSplit() {
             const poolAmount = parseInt(document.getElementById('matchPool').value);
@@ -1294,7 +1908,7 @@
             const loserCount = parseInt(document.getElementById('loserCount').value);
 
             if (!poolAmount || !winnerCount || !loserCount) {
-                alert('Please fill all fields');
+                showMessage('Please fill all fields', 'error');
                 return;
             }
 
@@ -1315,8 +1929,7 @@
             app.matches.push(match);
             renderMatches();
             updateDashboard();
-
-            alert(`Match added!\nWinners (60%): ₹${winnerAmount} each\nLosers (40%): ₹${loserAmount} each`);
+            showMessage(`Match added! Winners (60%): ₹${winnerAmount} each | Losers (40%): ₹${loserAmount} each`, 'success');
         }
 
         function renderMatches() {
@@ -1409,7 +2022,7 @@
 
         function renderSpendingChart() {
             const ctx = document.getElementById('spendingChart').getContext('2d');
-            const players = app.users.filter(u => u.role === 'player').slice(0, 6);
+            const players = app.users.filter(u => u.role === 'player').sort((a, b) => (b.balance || 0) - (a.balance || 0)).slice(0, 10);
             const labels = players.map(p => p.firstName);
             const balances = players.map(p => p.balance || 0);
 
@@ -1430,7 +2043,11 @@
                             'rgba(236, 72, 153, 0.8)',
                             'rgba(249, 115, 22, 0.8)',
                             'rgba(34, 197, 94, 0.8)',
-                            'rgba(59, 130, 246, 0.8)'
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(168, 85, 247, 0.8)',
+                            'rgba(244, 63, 94, 0.8)',
+                            'rgba(6, 182, 212, 0.8)',
+                            'rgba(251, 146, 60, 0.8)'
                         ],
                         borderRadius: 8,
                         borderSkipped: false
@@ -1452,12 +2069,39 @@
 
         function renderLeaderboard() {
             const players = app.users.filter(u => u.role === 'player')
-                .sort((a, b) => (b.balance || 0) - (a.balance || 0))
-                .slice(0, 10);
+                .sort((a, b) => (b.balance || 0) - (a.balance || 0));
 
             let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
             if (players.length === 0) {
                 html += '<p style="text-align: center; padding: 20px; color: #64748b;">No players yet</p>';
+            } else {
+                players.forEach((player, index) => {
+                    const rank = index + 1;
+                    const balance = player.balance || 0;
+                    html += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--light-bg); border-radius: 8px;">
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <span style="font-size: 18px; font-weight: 700; color: var(--primary); width: 30px;">${rank}</span>
+                                <span style="font-weight: 600;">${player.firstName} ${player.lastName}</span>
+                            </div>
+                            <span style="font-weight: 700; color: var(--success);">₹${balance.toLocaleString('en-IN')}</span>
+                        </div>
+                    `;
+                });
+            }
+            html += '</div>';
+            document.getElementById('leaderboardList').innerHTML = html;
+        }
+
+        function filterLeaderboard() {
+            const searchTerm = document.getElementById('leaderboardSearch').value.toLowerCase();
+            const players = app.users.filter(u => u.role === 'player' &&
+                (u.firstName.toLowerCase().includes(searchTerm) || u.lastName.toLowerCase().includes(searchTerm)))
+                .sort((a, b) => (b.balance || 0) - (a.balance || 0));
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            if (players.length === 0) {
+                html += '<p style="text-align: center; padding: 20px; color: #64748b;">No players found</p>';
             } else {
                 players.forEach((player, index) => {
                     const rank = index + 1;
@@ -1483,9 +2127,15 @@
             const lastName = document.getElementById('lastName').value.trim();
             const mobile = document.getElementById('mobile').value.trim();
             const role = document.getElementById('role').value;
+            const securityQAnswer = document.getElementById('securityQuestionAdmin').value.trim();
 
             if (!firstName || !lastName || !mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) {
-                alert('Please fill all fields correctly. Mobile must be exactly 10 digits.');
+                showMessage('Please fill all fields correctly. Mobile must be exactly 10 digits.', 'error');
+                return;
+            }
+
+            if (!securityQAnswer) {
+                showMessage('Please provide a security question answer', 'error');
                 return;
             }
 
@@ -1494,7 +2144,7 @@
             const password = `${firstName}${lastName}${last4Digits}`;
 
             if (app.users.some(u => u.username === username)) {
-                alert('Username already exists!');
+                showMessage('Username already exists!', 'error');
                 return;
             }
 
@@ -1505,7 +2155,9 @@
                 lastName,
                 mobile,
                 role,
-                balance: role === 'player' ? 1000 : 0
+                balance: role === 'player' ? 1000 : 0,
+                securityAnswer: securityQAnswer,
+                failedAttempts: 0
             };
 
             app.users.push(newUser);
@@ -1513,10 +2165,12 @@
             let credHTML = `
                 <div style="background: var(--light-bg); padding: 20px; border-radius: 10px;">
                     <p style="font-size: 13px; color: #64748b; margin-bottom: 15px; font-weight: 600;">User created successfully! Share these credentials:</p>
-                    <div style="padding: 15px; background: var(--light-card); border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <div style="padding: 15px; background: var(--light-card); border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 10px;">
                         <p style="font-size: 13px; margin: 8px 0;"><strong>Username:</strong> <code>${username}</code></p>
                         <p style="font-size: 13px; margin: 8px 0;"><strong>Password:</strong> <code>${password}</code></p>
-                        <p style="font-size: 13px; margin: 8px 0;"><strong>Format:</strong> Username = FirstName_Last4Digits | Password = FirstName+LastName+Last4Digits</p>
+                    </div>
+                    <div style="padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success);">
+                        <p style="font-size: 12px; color: var(--success); margin: 0;"><strong>Security Answer:</strong> ${securityQAnswer}</p>
                     </div>
                 </div>
             `;
@@ -1526,11 +2180,13 @@
             document.getElementById('lastName').value = '';
             document.getElementById('mobile').value = '';
             document.getElementById('role').value = 'player';
+            document.getElementById('securityQuestionAdmin').value = '';
 
             updateWalletDropdown();
             updateUsersTable();
+            updatePasswordResetTable();
             updateDashboard();
-            alert('User created successfully!');
+            showMessage('User created successfully!', 'success');
         }
 
         function updateUsersTable() {
@@ -1539,7 +2195,7 @@
                 const isAdmin = user.role === 'admin';
                 const deleteBtn = isAdmin && user.username === 'admin_0000' ?
                     '<button class="btn-small" style="background: #cbd5e1; color: #475569; cursor: not-allowed;" disabled>Protected</button>' :
-                    `<button class="btn-small" onclick="deleteUser('${user.username}')" style="background: var(--danger); color: white; border: none;">Delete</button>`;
+                    `<button class="btn-small btn-danger" onclick="deleteUser('${user.username}')" style="border: none;">Delete</button>`;
 
                 html += `
                     <tr>
@@ -1554,9 +2210,65 @@
             document.getElementById('usersTable').innerHTML = html;
         }
 
+        function filterUsersTable() {
+            const searchTerm = document.getElementById('usersSearch').value.toLowerCase();
+            const filtered = app.users.filter(u =>
+                u.username.toLowerCase().includes(searchTerm) ||
+                u.firstName.toLowerCase().includes(searchTerm) ||
+                u.lastName.toLowerCase().includes(searchTerm)
+            );
+
+            let html = '';
+            filtered.forEach(user => {
+                const isAdmin = user.role === 'admin';
+                const deleteBtn = isAdmin && user.username === 'admin_0000' ?
+                    '<button class="btn-small" style="background: #cbd5e1; color: #475569; cursor: not-allowed;" disabled>Protected</button>' :
+                    `<button class="btn-small btn-danger" onclick="deleteUser('${user.username}')" style="border: none;">Delete</button>`;
+
+                html += `
+                    <tr>
+                        <td><code>${user.username}</code></td>
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td><span class="alert alert-info">${user.role.toUpperCase()}</span></td>
+                        <td>${user.mobile}</td>
+                        <td>${deleteBtn}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('usersTable').innerHTML = html;
+        }
+
+        function updatePasswordResetTable() {
+            let html = '';
+            app.users.filter(u => u.role === 'player').forEach(user => {
+                html += `
+                    <tr>
+                        <td><code>${user.username}</code></td>
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td><span class="alert alert-info">PLAYER</span></td>
+                        <td>${user.mobile}</td>
+                        <td><button class="btn-small" onclick="resetUserPassword('${user.username}')" style="background: var(--warning); color: white; border: none;">Reset Password</button></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('passwordResetTable').innerHTML = html || '<tr><td colspan="5" style="text-align: center; padding: 20px;">No players found</td></tr>';
+        }
+
+        function resetUserPassword(username) {
+            const user = app.users.find(u => u.username === username);
+            if (!user) return;
+
+            const last4Digits = user.mobile.slice(-4);
+            const newPassword = `${user.firstName}${user.lastName}${last4Digits}`;
+            user.password = newPassword;
+
+            showMessage(`Password reset for ${user.firstName}! New password: ${newPassword}`, 'success');
+            updatePasswordResetTable();
+        }
+
         function deleteUser(username) {
             if (username === 'admin_0000') {
-                alert('Cannot delete default admin user');
+                showMessage('Cannot delete default admin user', 'error');
                 return;
             }
             if (confirm('Delete user: ' + username + '?')) {
@@ -1564,7 +2276,7 @@
                 updateUsersTable();
                 updateWalletDropdown();
                 updateDashboard();
-                alert('User deleted successfully');
+                showMessage('User deleted successfully', 'success');
             }
         }
 
@@ -1577,11 +2289,16 @@
         // Sample Data
         function initSampleData() {
             const sampleUsers = [
-                {username: 'Rohit_1234', password: 'RohitSharma1234', firstName: 'Rohit', lastName: 'Sharma', mobile: '9876541234', role: 'player', balance: 2500},
-                {username: 'Virat_5678', password: 'ViratKohli5678', firstName: 'Virat', lastName: 'Kohli', mobile: '9876545678', role: 'player', balance: 1800},
-                {username: 'Ms_9012', password: 'MsDhoni9012', firstName: 'Ms', lastName: 'Dhoni', mobile: '9876549012', role: 'player', balance: 3200},
-                {username: 'Jasprit_3456', password: 'JaspritBumrah3456', firstName: 'Jasprit', lastName: 'Bumrah', mobile: '9876543456', role: 'player', balance: 100},
-                {username: 'Hardik_7890', password: 'HardikPandya7890', firstName: 'Hardik', lastName: 'Pandya', mobile: '9876547890', role: 'player', balance: 2100}
+                {username: 'Rohit_1234', password: 'RohitSharma1234', firstName: 'Rohit', lastName: 'Sharma', mobile: '9876541234', role: 'player', balance: 2500, securityAnswer: 'Rohit Sharma', failedAttempts: 0},
+                {username: 'Virat_5678', password: 'ViratKohli5678', firstName: 'Virat', lastName: 'Kohli', mobile: '9876545678', role: 'player', balance: 1800, securityAnswer: 'Virat Kohli', failedAttempts: 0},
+                {username: 'Ms_9012', password: 'MsDhoni9012', firstName: 'MS', lastName: 'Dhoni', mobile: '9876549012', role: 'player', balance: 3200, securityAnswer: 'MS Dhoni', failedAttempts: 0},
+                {username: 'Jasprit_3456', password: 'JaspritBumrah3456', firstName: 'Jasprit', lastName: 'Bumrah', mobile: '9876543456', role: 'player', balance: 100, securityAnswer: 'Jasprit Bumrah', failedAttempts: 0},
+                {username: 'Hardik_7890', password: 'HardikPandya7890', firstName: 'Hardik', lastName: 'Pandya', mobile: '9876547890', role: 'player', balance: 2100, securityAnswer: 'Hardik Pandya', failedAttempts: 0},
+                {username: 'Suresh_1111', password: 'SureshRaina1111', firstName: 'Suresh', lastName: 'Raina', mobile: '9876541111', role: 'player', balance: 900, securityAnswer: 'Suresh Raina', failedAttempts: 0},
+                {username: 'Shreyas_2222', password: 'ShreyasIyer2222', firstName: 'Shreyas', lastName: 'Iyer', mobile: '9876542222', role: 'player', balance: 1500, securityAnswer: 'Shreyas Iyer', failedAttempts: 0},
+                {username: 'Bumrah_3333', password: 'RishabhPant3333', firstName: 'Rishabh', lastName: 'Pant', mobile: '9876543333', role: 'player', balance: 2700, securityAnswer: 'Rishabh Pant', failedAttempts: 0},
+                {username: 'Shubman_4444', password: 'ShubmanGill4444', firstName: 'Shubman', lastName: 'Gill', mobile: '9876544444', role: 'player', balance: 1200, securityAnswer: 'Shubman Gill', failedAttempts: 0},
+                {username: 'admin_0000', password: 'admin0000', firstName: 'Admin', lastName: 'User', mobile: '0000000000', role: 'admin', balance: 0, securityAnswer: 'admin', failedAttempts: 0}
             ];
 
             sampleUsers.forEach(user => {
