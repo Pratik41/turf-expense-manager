@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KSCC Cricket Club - Dashboard v4</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
@@ -184,32 +183,31 @@
         }
 
         .toggle-mode {
-            position: relative;
-            width: 44px;
-            height: 44px;
-            border: 2px solid var(--light-border);
-            border-radius: 12px;
-            background: var(--light-card);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #f59e0b;
+            font-size: 24px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 0;
         }
 
-        body[data-theme="dark"] .toggle-mode {
-            background: var(--dark-card);
-            border-color: var(--dark-border);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        .toggle-mode .light-icon {
+            color: #f59e0b;
+        }
+
+        .toggle-mode .dark-icon {
             color: #3b82f6;
         }
 
         .toggle-mode:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-            border-color: var(--primary);
+            transform: scale(1.15);
+            opacity: 0.8;
         }
 
         /* Modal */
@@ -1056,9 +1054,9 @@
                     <span id="currentUser">User</span>
                     <p id="userWalletDisplay" style="font-size: 12px; margin-top: 4px; display: none;"></p>
                 </div>
-                <button class="toggle-mode" id="themeToggle2" title="Toggle Dark/Light Mode">
-                    <i class="fas fa-sun sun-icon" style="display: block;"></i>
-                    <i class="fas fa-moon moon-icon" style="display: none;"></i>
+                <button class="toggle-mode" id="themeToggle2" title="Toggle Theme">
+                    <span class="light-icon">◯</span>
+                    <span class="dark-icon" style="display: none;">◑</span>
                 </button>
                 <button class="btn-logout" onclick="handleLogout()">Logout</button>
             </div>
@@ -1475,10 +1473,10 @@
             const isDark = document.body.getAttribute('data-theme') === 'dark';
             const toggle2 = document.getElementById('themeToggle2');
             if (toggle2) {
-                const sunIcon = toggle2.querySelector('.sun-icon');
-                const moonIcon = toggle2.querySelector('.moon-icon');
-                if (sunIcon) sunIcon.style.display = isDark ? 'none' : 'block';
-                if (moonIcon) moonIcon.style.display = isDark ? 'block' : 'none';
+                const lightIcon = toggle2.querySelector('.light-icon');
+                const darkIcon = toggle2.querySelector('.dark-icon');
+                if (lightIcon) lightIcon.style.display = isDark ? 'none' : 'block';
+                if (darkIcon) darkIcon.style.display = isDark ? 'block' : 'none';
             }
         }
 
