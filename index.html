@@ -2488,6 +2488,15 @@
         initTheme();
 
         // Sample Data
+        function generateRandomPassword(length = 8) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+            let password = '';
+            for (let i = 0; i < Math.min(length, Math.max(6, length)); i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
         function initSampleData() {
             const sampleUsers = [
                 {username: 'Rohit_1234', password: 'RohitSharma1234', firstName: 'Rohit', lastName: 'Sharma', mobile: '9876541234', role: 'player', balance: 2500, securityAnswer: 'Rohit Sharma', failedAttempts: 0},
@@ -2499,7 +2508,7 @@
                 {username: 'Shreyas_2222', password: 'ShreyasIyer2222', firstName: 'Shreyas', lastName: 'Iyer', mobile: '9876542222', role: 'player', balance: 1500, securityAnswer: 'Shreyas Iyer', failedAttempts: 0},
                 {username: 'Rishabh_3333', password: 'RishabhPant3333', firstName: 'Rishabh', lastName: 'Pant', mobile: '9876543333', role: 'player', balance: 2700, securityAnswer: 'Rishabh Pant', failedAttempts: 0},
                 {username: 'Shubman_4444', password: 'ShubmanGill4444', firstName: 'Shubman', lastName: 'Gill', mobile: '9876544444', role: 'player', balance: 1200, securityAnswer: 'Shubman Gill', failedAttempts: 0},
-                {username: 'admin_0000', password: 'admin0000', firstName: 'Admin', lastName: 'User', mobile: '0000000000', role: 'admin', balance: 0, securityAnswer: 'admin', failedAttempts: 0}
+                {username: 'admin', password: 'AUTO_GENERATE', firstName: 'Admin', lastName: 'User', mobile: '0000000000', role: 'admin', balance: 0, securityAnswer: 'admin', failedAttempts: 0}
             ];
 
             sampleUsers.forEach(user => {
@@ -2507,6 +2516,18 @@
                     app.users.push(user);
                 }
             });
+
+            // Generate random password for admin if not already set
+            let adminUser = app.users.find(u => u.username === 'admin');
+            if (adminUser && adminUser.password === 'AUTO_GENERATE') {
+                const randomPass = generateRandomPassword(8);
+                adminUser.password = randomPass;
+                localStorage.setItem('kscc_admin_password', randomPass);
+                console.log('%c⚙️ ADMIN CREDENTIALS ⚙️', 'color: #ef4444; font-size: 16px; font-weight: bold;');
+                console.log('%cUsername: admin', 'color: #10b981; font-size: 14px;');
+                console.log('%cPassword: ' + randomPass, 'color: #10b981; font-size: 14px;');
+                console.log('%c(Saved in localStorage)', 'color: #3b82f6; font-size: 12px;');
+            }
         }
 
         initSampleData();
